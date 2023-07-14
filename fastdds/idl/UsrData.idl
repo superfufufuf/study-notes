@@ -1,0 +1,5 @@
+struct UsrData
+{
+    string key;
+    string value;
+};

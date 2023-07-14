@@ -1,0 +1,2 @@
+export COMMONAPI_CONFIG=`pwd`/commonapi4someip.ini
+export VSOMEIP_CONFIGURATION=`pwd`/vsomeip-local.json

@@ -1,0 +1,28 @@
+/* Copyright (C) 2014 BMW Group
+ * Author: Manfred Bathelt (manfred.bathelt@bmw.de)
+ * Author: Juergen Gehring (juergen.gehring@bmw.de)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+package commonapi.examplesB
+
+interface CAPITestB {
+
+    version { major 1 minor 2 }
+
+    method foo {
+        in {
+            Int32 x1
+        }
+        out {
+            Int32 y1
+        }
+        error stdErrorTypeEnum
+    }
+
+    enumeration stdErrorTypeEnum {
+        NO_FAULT
+        MY_FAULT
+    }
+}
