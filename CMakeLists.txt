@@ -21,7 +21,7 @@ endif()
 set(extra_build_list)
 
 option(B_BULID_COMMONAPI "build commonapi example" OFF)
-option(B_BULID_FASTDDS "build fastdds example" ON)
+option(B_BULID_FASTDDS "build fastdds example" OFF)
 
 if(B_BULID_COMMONAPI)
     list(APPEND extra_build_list "commonapi")
@@ -37,23 +37,25 @@ endforeach()
 
 unset(extra_build_list)
 
-#set bin path
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-
 # add head file
 include_directories(./)
 include_directories(fastdds)
 include_directories(future)
 include_directories(rValueRef)
-include_directories(shader)
 include_directories(shared_ptr)
 include_directories(taskExecutor)
 include_directories(templates)
 include_directories(thread)
 include_directories(window)
 include_directories(destruct)
+include_directories(stb-image-master)
+include_directories(log)
 
 add_compile_options(-fno-elide-constructors) 
+
+# copy resource to build directory
+file(COPY ${PROJECT_SOURCE_DIR}/resource/shader DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${PROJECT_SOURCE_DIR}/resource/image DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # add source file
 file(GLOB SRC_LIST
@@ -61,14 +63,15 @@ file(GLOB SRC_LIST
         "fastdds/*.cpp"
         "future/*.cpp"
         "rValueRef/*.cpp"
-        "shader/*.cpp"
         "shared_ptr/*.cpp"
         "taskExecutor/*.cpp"
         "templates/*.cpp"
         "thread/*.cpp"
         "window/*.cpp"
         "destructs/*.cpp"
+        "log/*.cpp"
 )
+
 
 # create bin
 

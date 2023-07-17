@@ -1,4 +1,5 @@
 #include "share_ptr.h"
+#include "LogManager.h"
 
 void Ptr_Test1()
 {
@@ -12,19 +13,19 @@ void Ptr_Test1()
         w.setData(ptr2);
         w.printData();
     }
-    cout << "now counts:" << ptr2.use_count() << endl;
+    _LOG("now counts:" + to_string(ptr2.use_count()), LogLevel::DEBUG);
     {
         SharePtrTest w(ptr2);
-        cout << "now counts:" << ptr2.use_count() << endl;
+        _LOG("now counts:" + to_string(ptr2.use_count()), LogLevel::DEBUG);
     }
-    cout << "now counts:" << ptr2.use_count() << endl;
+    _LOG("now counts:" + to_string(ptr2.use_count()), LogLevel::DEBUG);
 
-    cout << ptr2.use_count() << "end" << endl;
+    _LOG(to_string(ptr2.use_count()) + "end", LogLevel::DEBUG);
 }
 
 void Ptr_Test2()
 {
-    cout << "Ptr_Test2 start." << endl;
+    _LOG("Ptr_Test2 start.", LogLevel::DEBUG);
     shared_ptr<TestData> ptr1 = make_shared<TestData>("ptr1");
     ptr1.reset();
     shared_ptr<TestData> ptr2 = make_shared<TestData>("ptr2");
@@ -35,21 +36,21 @@ void Ptr_Test2()
     ptr4.release();
     if (ptr1)
     {
-        cout << "ptr1 is alive.";
+        _LOG("ptr1 is alive.", LogLevel::DEBUG);
     }
     if (ptr2)
     {
-        cout << "ptr2 is alive.";
+        _LOG("ptr2 is alive.", LogLevel::DEBUG);
     }
     if (ptr3)
     {
-        cout << "ptr3 is alive.";
+        _LOG("ptr3 is alive.", LogLevel::DEBUG);
     }
     if (ptr4)
     {
-        cout << "ptr4 is alive.";
+        _LOG("ptr4 is alive.", LogLevel::DEBUG);
     }
-    cout << "Ptr_Test2 finish." << endl;
+    _LOG("Ptr_Test2 finish.", LogLevel::DEBUG);
 }
 
 void Ptr_Test3()
@@ -57,35 +58,34 @@ void Ptr_Test3()
     TestDataB *b = new TestDataB("xixixi");
     shared_ptr<TestData> v(b);
     // shared_ptr<TestData> v = make_shared<TestData>("xixixi");
-    cout << v->getName()<<endl;
-    cout << "Ptr_Test3 finish." << endl;
+    _LOG(v->getName(), LogLevel::DEBUG);
+    _LOG("Ptr_Test3 finish.", LogLevel::DEBUG);
 }
 
 void showData(shared_ptr<TestData> _t)
 {
     _t->setName("nininini");
-    cout << "_t.count:"<<_t.use_count()<<",data:"<<_t->getName()<<endl;
+    _LOG("_t.count:" + to_string(_t.use_count()) + ",data:" + _t->getName(), LogLevel::DEBUG);
 }
 
 void Ptr_Test4()
 {
     shared_ptr<TestDataB> b = make_shared<TestDataB>("yayaya");
-    cout << "b.count:"<<b.use_count()<<",data:"<<b->getName()<<endl;
+    _LOG("b.count:" + to_string(b.use_count()) + ",data:" + b->getName(), LogLevel::DEBUG);
     showData(dynamic_pointer_cast<TestData>(b));
-    cout << "b.count:"<<b.use_count()<<",data:"<<b->getName()<<endl;
-    cout << "b.count:"<<dynamic_pointer_cast<TestData>(b).use_count()<<",data:"<<b->getName()<<endl;
-    cout << "Ptr_Test4 finish." << endl;
+    _LOG("b.count:" + to_string(b.use_count()) + ",data:" + b->getName(), LogLevel::DEBUG);
+    _LOG("b.count:" + to_string(dynamic_pointer_cast<TestData>(b).use_count()) + ",data:" + b->getName(), LogLevel::DEBUG);
+    _LOG("Ptr_Test4 finish.", LogLevel::DEBUG);
 }
 
 TestData::TestData(const string &_name)
 {
     m_name = _name;
-    // cout<<"\""<<m_name<<"\" had new."<<endl;
 }
 
 TestData::~TestData()
 {
-    cout << "\"" << m_name << "\" had delete." << endl;
+    _LOG("\"" + m_name + "\" had delete.", LogLevel::DEBUG);
 }
 
 void TestData::setName(const string &_name)
@@ -105,7 +105,7 @@ SharePtrTest::SharePtrTest()
 SharePtrTest::SharePtrTest(shared_ptr<TestData> _ptr)
     : m_ptr2(_ptr)
 {
-    cout << "SharePtrTest count:" << _ptr.use_count() << endl;
+    _LOG("SharePtrTest count:" + to_string(_ptr.use_count()), LogLevel::DEBUG);
 }
 
 SharePtrTest::~SharePtrTest()
@@ -124,7 +124,7 @@ void SharePtrTest::setData(shared_ptr<TestData> &_ptr)
 
 void SharePtrTest::printData() const
 {
-    cout << "ptr1{" << m_ptr->getName() << "}, ptr2{" << m_ptr2->getName() << "," << m_ptr2.use_count() << endl;
+    _LOG("ptr1{" + m_ptr->getName() + "}, ptr2{" + m_ptr2->getName() + "," + to_string(m_ptr2.use_count()), LogLevel::DEBUG);
 }
 
 void SharePtrTest::run()

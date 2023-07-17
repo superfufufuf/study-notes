@@ -1,0 +1,107 @@
+# Copyright (C) 2021 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//developtools/profiler/build/config.gni")
+
+config("stb_image_config") {
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-D_HAS_EXCEPTIONS=0",
+    "-DHAVE_CONFIG_H",
+    "-Wno-macro-redefined",
+    "-Wno-unused-variable",
+    "-Wno-constant-conversion",
+    "-Wno-unused-function",
+    "-Wno-implicit-int",
+    "-fvisibility=default",
+    "-Wno-unused-variable",
+    "-Wno-writable-strings",
+  ]
+
+  if (target_os == "win") {
+    cflags += [
+      "-DNOMINMAX",
+      "-D_CRT_SECURE_NO_DEPRECATE",
+      "-D_CRT_NONSTDC_NO_DEPRECATE",
+      "-D_WIN32_WINNT=0x0600",
+    ]
+    ldflags += [ "-defaultlib:ws2_32.lib" ]
+  }
+}
+
+ohos_shared_library("stb_image") {
+  stb_image_srcs = [
+    "stb_vorbis.c",
+    "deprecated/stb_image.c",
+    "deprecated/stretch_test.c",
+  ]
+  sources = []
+  foreach(src, stb_image_srcs) {
+    sources += [ src ]
+  }
+
+  configs = [ ":stb_image_config" ]
+
+  include_dirs = [
+    "stb_connected_components.h",
+    "stb_c_lexer.h",
+    "stb_divide.h",
+    "stb_ds.h",
+    "stb_dxt.h",
+    "stb_easy_font.h",
+    "stb_herringbone_wang_tile.h",
+    "stb_hexwave.h",
+    "stb_image.h",
+    "stb_image_resize.h",
+    "stb_image_write.h",
+    "stb_include.h",
+    "stb_leakcheck.h",
+    "stb_rect_pack.h",
+    "stb_sprintf.h",
+    "stb_textedit.h",
+    "stb_tilemap_editor.h",
+    "stb_truetype.h",
+    "stb_voxel_render.h",
+    "deprecated/rrsprintf.h",
+    "deprecated/stb.h",
+    "deprecated/stretchy_buffer.h",
+  ]
+
+  # print("cares_target_os is $target_os")
+  install_enable = true
+  subsystem_name = "${OHOS_PROFILER_SUBSYS_NAME}"
+  part_name = "${OHOS_PROFILER_PART_NAME}"
+}
+
+
+
+ohos_executable("stb_image_test") {
+  sources = [ "./tests/test_ds_cpp.cpp", ]
+  deps = [ ":stb_image" ]
+  include_dirs = [
+    ".",
+    "../",
+    "./deprecated/",
+    "//third_party/boost/boost/predef/",
+  ]
+  defines = [ "DS_TEST = 1",
+              #"DS_STATS = 1",
+              #"DS_PERF = 1",
+   ]
+  configs = [ ":stb_image_config" ]
+#  shared_link = true
+  subsystem_name = "${OHOS_PROFILER_SUBSYS_NAME}"
+  part_name = "${OHOS_PROFILER_PART_NAME}"
+}
+

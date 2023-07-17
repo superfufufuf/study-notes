@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "stb_image",
+        "License": "MIT License",
+        "License File": "LICENSE",
+        "Version Number": "master",
+        "Owner" : "nothings"
+        "Upstream URL": "https://github.com/nothings/stb",
+        "Description": "stb single-file public domain libraries for C/C++"
+    }
+]

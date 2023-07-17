@@ -1,7 +1,7 @@
 #ifndef MY_WINDOW_H
 #define MY_WINDOW_H
 
-#ifdef D_FOR_X11_
+#ifdef _FOR_X11_
 
 #include <X11/X.h>
 #include <X11/Xlib.h>

@@ -5,17 +5,18 @@
 #include <unistd.h>
 #include <signal.h>
 #include <iostream>
+#include "LogManager.h"
 
 using namespace std;
 
 void exitFun()
 {
-    cout << "main is exit" << endl;
+    _LOG("main is exit", LogLevel::DEBUG);
 }
 
 void abnormalExit(int32_t id)
 {
-    cout << "get one sign:" << id << endl;
+    _LOG("get one sign:" + to_string(id), LogLevel::DEBUG);
 }
 
 void TestDestruct()

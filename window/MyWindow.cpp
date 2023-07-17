@@ -1,7 +1,8 @@
-#ifdef D_FOR_X11_
+#ifdef _FOR_X11_
 
 #include "MyWindow.h"
 #include "MyEGLClass.h"
+#include "LogManager.h"
 #include <thread>
 
 MyX11Class::MyX11Class(const Rect rect)
@@ -12,12 +13,12 @@ MyX11Class::MyX11Class(const Rect rect)
     display = XOpenDisplay(NULL);
     if (display == NULL)
     {
-        cout << "------X11 Cannot open display------" << endl;
+        _LOG("------X11 Cannot open display------", LogLevel::ERROR);
         exit(1);
     }
     else
     {
-        cout << "X11 open display success" << endl;
+        _LOG("X11 open display success", LogLevel::DEBUG);
     }
 
     // 获取默认屏幕
@@ -44,7 +45,7 @@ MyX11Class::~MyX11Class()
 {
     // 关闭与Xserver服务器的连接
     XCloseDisplay(display);
-    cout << "MyX11Class exit" << endl;
+    _LOG("MyX11Class exit", LogLevel::DEBUG);
 }
 Display *MyX11Class::GetDisplay()
 {
@@ -60,7 +61,7 @@ void MyX11Class::Stop()
 }
 void MyX11Class::X11EventRecv()
 {
-    cout << "start get X11 event" << endl;
+    _LOG("start get X11 event", LogLevel::DEBUG);
     // 事件遍历
     XEvent event;
     KeySym event_key_0;
@@ -74,7 +75,7 @@ void MyX11Class::X11EventRecv()
         if (event.type == ButtonPress)
         {
             str = "mouse event";
-            cout << str << endl;
+            _LOG(str, LogLevel::DEBUG);
         }
         // 键盘事件
         else if (event.type == KeyPress)
@@ -89,7 +90,7 @@ void MyX11Class::X11EventRecv()
                     str[a] = str[a] - 'a' + 'A';
                 }
             }
-            cout << "key event:" + str << endl;
+            _LOG("key event:" + str, LogLevel::DEBUG);
         }
     }
 }
@@ -137,19 +138,19 @@ void MyWindow::Start()
 
     if (0 == eglDisplay)
     {
-        cout << "eglDisplay ini failed." << endl;
+        _LOG("eglDisplay ini failed.", LogLevel::ERROR);
     }
     else
     {
-        cout << "eglDisplay ini success." << endl;
+        _LOG("eglDisplay ini success.", LogLevel::DEBUG);
     }
     if (0 == eglWindow)
     {
-        cout << "eglWindow ini failed." << endl;
+        _LOG("eglWindow ini failed.", LogLevel::ERROR);
     }
     else
     {
-        cout << "eglWindow ini success." << endl;
+        _LOG("eglWindow ini success.", LogLevel::DEBUG);
     }
 
     thread EGLRenderThread(std::bind(&MyWindow::StartEgl, this, eglDisplay, eglWindow, X11Rect));

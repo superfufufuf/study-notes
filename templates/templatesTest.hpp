@@ -7,6 +7,7 @@
 #include <iostream>
 #include <memory>
 #include <map>
+#include "LogManager.h"
 
 using namespace std;
 
@@ -58,16 +59,17 @@ public:
     void print() const
     {
         bool isFirst = true;
+        string info;
         for (auto item : strList)
         {
             if (!isFirst)
             {
-                cout << ",";
+                info += ",";
             }
-            cout << item->GetData();
+            info += item->GetData();
             isFirst = false;
         }
-        cout << endl;
+        _LOG(info, LogLevel::DEBUG);
     }
 };
 
