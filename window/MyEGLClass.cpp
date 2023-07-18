@@ -2,6 +2,9 @@
 #include "LogManager.h"
 #include <sstream>
 #include <fstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "LogManager.h"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -13,6 +16,7 @@
 
 MyEGLClass::MyEGLClass(unsigned long display, unsigned long window, const Rect rect)
 {
+    m_viewRect = rect;
     m_mainContextThreadId = std::this_thread::get_id();
     /* EGLDisplay eglDisplay，在Microsoft Windows上是设备上下文的句柄HDC，为了方便将代码移植到不同的操作系统和平台应该使用EGL_DEFAULT_DISPLAY，
      * 返回默认原生显示的连接，如果显示连接不可用，将返回EGL_NO_DISPLAY，表示EGL不可用，因此也无法使用OpenGL ES 3.0 */
@@ -323,6 +327,16 @@ GLuint MyEGLClass::LoadTexture(const string &_textureName)
     return textureId;
 }
 
+void printMat(const glm::mat4 &_mat)
+{
+    auto p = glm::value_ptr(_mat);
+    for (int i = 0; i < 4; i++)
+    {
+        cout << p[i * 4] << "," << p[i * 4 + 1] << "," << p[i * 4 + 2] << "," << p[i * 4 + 3] << endl;
+    }
+    cout << endl;
+}
+
 void MyEGLClass::Render()
 {
     _LOG("MyEGLClass::Render start", LogLevel::DEBUG);
@@ -332,6 +346,7 @@ void MyEGLClass::Render()
     GLuint programObject;
     GLint linked;
     // 载入顶点、片段着色器
+    glViewport(0, 0, m_viewRect.width, m_viewRect.height);
 
     vertexShader = LoadShader(GetStringFromFile("shader/test.vsh"), GL_VERTEX_SHADER);
     fragmentShader = LoadShader(GetStringFromFile("shader/test.fsh"), GL_FRAGMENT_SHADER);
@@ -365,13 +380,17 @@ void MyEGLClass::Render()
     GLuint oneMvpLoc = glGetUniformLocation(programObject, "mvpMatrix");
     _LOG("oneMvpLoc:" + to_string(oneMvpLoc), LogLevel::DEBUG);
 
-    GLuint textureId = LoadTexture("./image/white-rect.png");
+    GLuint textureId = LoadTexture("image/white-rect.png");
 
-    float mvp[16] = {0};
-    GLfloat pos[12] = {-0.5f, 0.5f, 0,
-                       0.5f, 0.5f, 0,
-                       0.5f, -0.5f, 0,
-                       -0.5f, -0.5f, 0};
+    glm::mat4 mvp = glm::mat4(1.0f);
+    mvp = glm::translate(mvp, glm::vec3(0.0f, 0.0f, 0.0f));
+    mvp = glm::scale(mvp, glm::vec3(2.0f / float(m_viewRect.width), 2.0f / float(m_viewRect.height), 0.0f));
+    printMat(mvp);
+
+    GLfloat pos[12] = {-0.5f * m_viewRect.width, 0.5f * m_viewRect.height, 0,
+                       -0.5f * m_viewRect.width, -0.5f * m_viewRect.height, 0,
+                       0.5f * m_viewRect.width, 0.5f * m_viewRect.height, 0,
+                       0.5f * m_viewRect.width, -0.5f * m_viewRect.height, 0};
     // 左上，左下，右上，右下
     float vTexture[] = {0.0f, 0.0f,  // 右上角,按屏幕坐标系处理即可
                         0.0f, 1.0f,  // 右下角
@@ -389,7 +408,7 @@ void MyEGLClass::Render()
 
         // 使用程序对象
         glUseProgram(programObject);
-        glUniformMatrix4fv(oneMvpLoc, 1, GL_FALSE, (float *)mvp);
+        glUniformMatrix4fv(oneMvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
         // // 激活一个纹理采集器
         glActiveTexture(GL_TEXTURE0);
         // 绑定纹理
@@ -412,7 +431,7 @@ void MyEGLClass::Render()
         glFinish();
 
         auto endTime = chrono::steady_clock::now();
-        _LOG("MyEGLClass::Render use time :" + to_string(chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count()), LogLevel::DEBUG);
+        // _LOG("MyEGLClass::Render use time :" + to_string(chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count()), LogLevel::DEBUG);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }

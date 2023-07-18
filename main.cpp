@@ -41,8 +41,12 @@ int main(int argc, char const *argv[])
     windowId = (unsigned long)window.GetWindow();
     window.Start();
 #endif
-    MyEGLClass myEgl(displayId, windowId, windowRect);
-    thread(&MyEGLClass::Render, &myEgl).detach();
+    // MyEGLClass myEgl(displayId, windowId, windowRect);
+    // thread(&MyEGLClass::Render, &myEgl).detach();
+    thread([&](){
+        MyEGLClass myEgl(displayId, windowId, windowRect);
+        myEgl.Render();
+    }).detach();
 
 #if TEST_ID == 1
     Ptr_Test1();

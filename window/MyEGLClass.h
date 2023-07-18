@@ -25,6 +25,7 @@ private:
     EGLDisplay eglDisplay = 0;
     EGLSurface eglSurface;
     EGLConfig eglConfig;
+    Rect m_viewRect;
     map<thread::id, EGLContext> m_mapContext; // key: threadId
     thread::id m_curContextThreadId;
     thread::id m_mainContextThreadId;
