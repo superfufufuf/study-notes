@@ -6,6 +6,8 @@ project(tool)
 
 set(CMAKE_BUILD_TYPE "Debug")
 
+set(_3rdpart_path ${CMAKE_CURRENT_SOURCE_DIR}/3rdpart)
+
 SET(WINSYS "x11" CACHE STRING "select window system")
 if (WINSYS STREQUAL "x11")
 	option(D_FOR_X11_ "X11" ON)
@@ -20,14 +22,20 @@ endif()
 
 set(extra_build_list)
 
+list(APPEND extra_build_list "3rdpart")
+
 option(B_BULID_COMMONAPI "build commonapi example" OFF)
 option(B_BULID_FASTDDS "build fastdds example" OFF)
+option(B_BULID_NANOMSG "build nanomsg example" ON)
 
 if(B_BULID_COMMONAPI)
     list(APPEND extra_build_list "commonapi")
 endif()
 if(B_BULID_FASTDDS)
     list(APPEND extra_build_list "fastdds")
+endif()
+if(B_BULID_NANOMSG)
+    list(APPEND extra_build_list "nanomsg")
 endif()
 
 foreach(_target ${extra_build_list})
@@ -48,7 +56,7 @@ include_directories(templates)
 include_directories(thread)
 include_directories(window)
 include_directories(destruct)
-include_directories(stb-image-master)
+include_directories(3rdpart)
 include_directories(log)
 
 add_compile_options(-fno-elide-constructors) 
