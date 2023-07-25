@@ -1,3 +1,6 @@
+#ifndef MsgNodeFactory_H
+#define MsgNodeFactory_H
+
 #include <string>
 #include <atomic>
 #include <list>
@@ -112,3 +115,5 @@ public:
 
 private:
 };
+
+#endif
