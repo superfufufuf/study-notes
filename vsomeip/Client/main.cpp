@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
-    SomeIpTestClient client(0x1234, 0x5678, 0x1343);
+    SomeIpTestClient client;
     client.init();
     thread(std::bind(&SomeIpTestClient::start, &client)).detach();
     while (true)

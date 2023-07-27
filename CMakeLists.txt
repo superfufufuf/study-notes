@@ -25,7 +25,7 @@ set(extra_build_list)
 list(APPEND extra_build_list "3rdpart")
 
 option(B_BULID_VSOMEIP "build someip example" ON)
-option(B_BULID_COMMONAPI "build commonapi example" OFF)
+option(B_BULID_COMMONAPI "build commonapi example" ON)
 option(B_BULID_FASTDDS "build fastdds example" OFF)
 option(B_BULID_NANOMSG "build nanomsg example" OFF)
 

@@ -7,8 +7,7 @@
 class SomeIpTestClient
 {
 public:
-    SomeIpTestClient() = delete;
-    SomeIpTestClient(const vsomeip::service_t &_serviceId, const vsomeip::instance_t &_instanceId, const vsomeip::method_t &_methodId);
+    SomeIpTestClient();
     SomeIpTestClient(const SomeIpTestClient &_other) = delete;
     SomeIpTestClient(const SomeIpTestClient &&_other) = delete;
     ~SomeIpTestClient();
@@ -25,9 +24,6 @@ private:
 
     std::shared_ptr<vsomeip::runtime> m_runTime;
     std::shared_ptr<vsomeip::application> m_app;
-    vsomeip::service_t m_serviceId;
-    vsomeip::instance_t m_instanceId;
-    vsomeip::method_t m_methodId;
     bool bAvailable = false;
 };
 

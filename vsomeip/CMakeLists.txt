@@ -10,6 +10,7 @@ find_package(Boost COMPONENTS system thread log)
 find_package(vsomeip3)
 
 include_directories(
+	./
 	Client
 	Server
     ${VSOMEIP_INCLUDE_DIRS}

@@ -6,7 +6,15 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
-    SomeIpTestServer server(0x1234, 0x5678, 0x1343);
+    SomeIpTestServer server;
     server.init();
-    server.start();
+    thread(std::bind(&SomeIpTestServer::start, &server)).detach();
+    while (true)
+    {
+        string data;
+        cout << "please input data." << endl;
+        cin >> data;
+        server.PublishData(data);
+        this_thread::sleep_for(chrono::milliseconds(10));
+    }
 }
