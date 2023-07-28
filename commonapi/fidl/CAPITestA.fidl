@@ -33,4 +33,22 @@ interface CAPITestA {
         NO_FAULT
         MY_FAULT
     }
+
+    attribute Int32 x
+    attribute CommonTypes.a1Struct a1
+}
+
+typeCollection CommonTypes {
+    version { major 1 minor 0 }
+    
+    struct a1Struct {
+        String s
+        a2Struct a2
+    }
+
+    struct a2Struct {
+        Int32 a
+        Boolean b
+        Double d
+    }
 }

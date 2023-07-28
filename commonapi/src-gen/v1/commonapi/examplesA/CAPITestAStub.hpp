@@ -15,6 +15,7 @@
 
 
 
+#include <v1/commonapi/examplesA/CommonTypes.hpp>
 
 #include <v1/commonapi/examplesA/CAPITestA.hpp>
 
@@ -23,12 +24,16 @@
 #define HAS_DEFINED_COMMONAPI_INTERNAL_COMPILATION_HERE
 #endif
 
+#include <CommonAPI/Deployment.hpp>
 #include <CommonAPI/InputStream.hpp>
 #include <CommonAPI/OutputStream.hpp>
+#include <CommonAPI/Struct.hpp>
 #include <cstdint>
+#include <string>
 #include <unordered_set>
 #include <vector>
 
+#include <mutex>
 
 #include <CommonAPI/Stub.hpp>
 
@@ -56,16 +61,36 @@ class CAPITestAStubAdapter
     * Instead, the "fire<broadcastName>Event" methods of the stub should be used.
     */
     virtual void fireMyStatusEvent(const int32_t &_myCurrentValue) = 0;
+    ///Notifies all remote listeners about a change of value of the attribute x.
+    virtual void fireXAttributeChanged(const int32_t &x) = 0;
+    ///Notifies all remote listeners about a change of value of the attribute a1.
+    virtual void fireA1AttributeChanged(const ::v1::commonapi::examplesA::CommonTypes::a1Struct &a1) = 0;
 
 
     virtual void deactivateManagedInstances() = 0;
 
+    void lockXAttribute(bool _lockAccess) {
+        if (_lockAccess) {
+            xMutex_.lock();
+        } else {
+            xMutex_.unlock();
+        }
+    }
+    void lockA1Attribute(bool _lockAccess) {
+        if (_lockAccess) {
+            a1Mutex_.lock();
+        } else {
+            a1Mutex_.unlock();
+        }
+    }
 
 protected:
     /**
      * Defines properties for storing the ClientIds of clients / proxies that have
      * subscribed to the selective broadcasts
      */
+    std::recursive_mutex xMutex_;
+    std::recursive_mutex a1Mutex_;
 
 };
 
@@ -86,6 +111,14 @@ class CAPITestAStubRemoteEvent
 public:
     virtual ~CAPITestAStubRemoteEvent() { }
 
+    /// Verification callback for remote set requests on the attribute x
+    virtual bool onRemoteSetXAttribute(const std::shared_ptr<CommonAPI::ClientId> _client, int32_t _value) = 0;
+    /// Action callback for remote set requests on the attribute x
+    virtual void onRemoteXAttributeChanged() = 0;
+    /// Verification callback for remote set requests on the attribute a1
+    virtual bool onRemoteSetA1Attribute(const std::shared_ptr<CommonAPI::ClientId> _client, ::v1::commonapi::examplesA::CommonTypes::a1Struct _value) = 0;
+    /// Action callback for remote set requests on the attribute a1
+    virtual void onRemoteA1AttributeChanged() = 0;
 };
 
 /**
@@ -103,7 +136,7 @@ public:
     virtual ~CAPITestAStub() {}
     void lockInterfaceVersionAttribute(bool _lockAccess) { static_cast<void>(_lockAccess); }
     bool hasElement(const uint32_t _id) const {
-        return (_id < 2);
+        return (_id < 4);
     }
     virtual const CommonAPI::Version& getInterfaceVersion(std::shared_ptr<CommonAPI::ClientId> _client) = 0;
 
@@ -114,6 +147,32 @@ public:
         auto stubAdapter = CommonAPI::Stub<CAPITestAStubAdapter, CAPITestAStubRemoteEvent>::stubAdapter_.lock();
         if (stubAdapter)
             stubAdapter->fireMyStatusEvent(_myCurrentValue);
+    }
+    /// Provides getter access to the attribute x
+    virtual const int32_t &getXAttribute(const std::shared_ptr<CommonAPI::ClientId> _client) = 0;
+    /// sets attribute with the given value and propagates it to the adapter
+    virtual void fireXAttributeChanged(int32_t _value) {
+    auto stubAdapter = CommonAPI::Stub<CAPITestAStubAdapter, CAPITestAStubRemoteEvent>::stubAdapter_.lock();
+    if (stubAdapter)
+        stubAdapter->fireXAttributeChanged(_value);
+    }
+    void lockXAttribute(bool _lockAccess) {
+        auto stubAdapter = CommonAPI::Stub<CAPITestAStubAdapter, CAPITestAStubRemoteEvent>::stubAdapter_.lock();
+        if (stubAdapter)
+            stubAdapter->lockXAttribute(_lockAccess);
+    }
+    /// Provides getter access to the attribute a1
+    virtual const ::v1::commonapi::examplesA::CommonTypes::a1Struct &getA1Attribute(const std::shared_ptr<CommonAPI::ClientId> _client) = 0;
+    /// sets attribute with the given value and propagates it to the adapter
+    virtual void fireA1AttributeChanged(::v1::commonapi::examplesA::CommonTypes::a1Struct _value) {
+    auto stubAdapter = CommonAPI::Stub<CAPITestAStubAdapter, CAPITestAStubRemoteEvent>::stubAdapter_.lock();
+    if (stubAdapter)
+        stubAdapter->fireA1AttributeChanged(_value);
+    }
+    void lockA1Attribute(bool _lockAccess) {
+        auto stubAdapter = CommonAPI::Stub<CAPITestAStubAdapter, CAPITestAStubRemoteEvent>::stubAdapter_.lock();
+        if (stubAdapter)
+            stubAdapter->lockA1Attribute(_lockAccess);
     }
 
 

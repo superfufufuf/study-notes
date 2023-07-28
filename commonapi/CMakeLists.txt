@@ -14,6 +14,7 @@ find_package(CommonAPI-SomeIP)
 find_package(vsomeip3)
 
 include_directories(
+	include
 	CAPITestAppA
 	CAPITestAppB
     src-gen 

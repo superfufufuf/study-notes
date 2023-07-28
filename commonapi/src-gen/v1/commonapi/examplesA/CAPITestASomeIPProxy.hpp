@@ -12,6 +12,7 @@
 
 #include <v1/commonapi/examplesA/CAPITestAProxyBase.hpp>
 #include <v1/commonapi/examplesA/CAPITestASomeIPDeployment.hpp>
+#include <v1/commonapi/examplesA/CommonTypesSomeIPDeployment.hpp>
 
 #if !defined (COMMONAPI_INTERNAL_COMPILATION)
 #define COMMONAPI_INTERNAL_COMPILATION
@@ -21,6 +22,7 @@
 #include <CommonAPI/SomeIP/Factory.hpp>
 #include <CommonAPI/SomeIP/Proxy.hpp>
 #include <CommonAPI/SomeIP/Types.hpp>
+#include <CommonAPI/SomeIP/Attribute.hpp>
 #include <CommonAPI/SomeIP/Event.hpp>
 
 #if defined (HAS_DEFINED_COMMONAPI_INTERNAL_COMPILATION_HERE)
@@ -56,6 +58,10 @@ public:
 
     virtual ~CAPITestASomeIPProxy();
 
+    virtual XAttribute& getXAttribute();
+
+    virtual A1Attribute& getA1Attribute();
+
     virtual MyStatusEvent& getMyStatusEvent();
 
     virtual void foo(int32_t _x1, std::string _x2, CommonAPI::CallStatus &_internalCallStatus, CAPITestA::stdErrorTypeEnum &_error, int32_t &_y1, std::string &_y2, const CommonAPI::CallInfo *_info);
@@ -67,6 +73,8 @@ public:
     virtual std::future<void> getCompletionFuture();
 
 private:
+    CommonAPI::SomeIP::ObservableAttribute<CommonAPI::SomeIP::Attribute<XAttribute, CommonAPI::SomeIP::IntegerDeployment<int32_t>>> x_;
+    CommonAPI::SomeIP::ObservableAttribute<CommonAPI::SomeIP::Attribute<A1Attribute, ::v1::commonapi::examplesA::CommonTypes_::a1StructDeployment_t>> a1_;
     CommonAPI::SomeIP::Event<MyStatusEvent, CommonAPI::Deployable< int32_t, CommonAPI::SomeIP::IntegerDeployment<int32_t> >> myStatus_;
 
     std::promise<void> completed_;

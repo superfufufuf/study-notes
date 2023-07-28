@@ -12,6 +12,7 @@
 
 #include <v1/commonapi/examplesA/CAPITestAStub.hpp>
 #include <v1/commonapi/examplesA/CAPITestASomeIPDeployment.hpp>
+#include <v1/commonapi/examplesA/CommonTypesSomeIPDeployment.hpp>
 
 #if !defined (COMMONAPI_INTERNAL_COMPILATION)
 #define COMMONAPI_INTERNAL_COMPILATION
@@ -48,6 +49,10 @@ public:
         CAPITestASomeIPStubAdapterHelper::deinit();
     }
 
+    void fireXAttributeChanged(const int32_t &_value);
+    
+    void fireA1AttributeChanged(const ::v1::commonapi::examplesA::CommonTypes::a1Struct &_value);
+    
     void fireMyStatusEvent(const int32_t &_myCurrentValue);
 
     void deactivateManagedInstances() {}
@@ -57,6 +62,30 @@ public:
         CommonAPI::Version
     > getCAPITestAInterfaceVersionStubDispatcher;
 
+    CommonAPI::SomeIP::GetAttributeStubDispatcher<
+        ::v1::commonapi::examplesA::CAPITestAStub,
+        int32_t,
+        CommonAPI::SomeIP::IntegerDeployment<int32_t>
+    > getXAttributeStubDispatcher;
+    
+    CommonAPI::SomeIP::SetObservableAttributeStubDispatcher<
+        ::v1::commonapi::examplesA::CAPITestAStub,
+        int32_t,
+        CommonAPI::SomeIP::IntegerDeployment<int32_t>
+    > setXAttributeStubDispatcher;
+    
+    CommonAPI::SomeIP::GetAttributeStubDispatcher<
+        ::v1::commonapi::examplesA::CAPITestAStub,
+        ::v1::commonapi::examplesA::CommonTypes::a1Struct,
+        ::v1::commonapi::examplesA::CommonTypes_::a1StructDeployment_t
+    > getA1AttributeStubDispatcher;
+    
+    CommonAPI::SomeIP::SetObservableAttributeStubDispatcher<
+        ::v1::commonapi::examplesA::CAPITestAStub,
+        ::v1::commonapi::examplesA::CommonTypes::a1Struct,
+        ::v1::commonapi::examplesA::CommonTypes_::a1StructDeployment_t
+    > setA1AttributeStubDispatcher;
+    
     CommonAPI::SomeIP::MethodWithReplyStubDispatcher<
         ::v1::commonapi::examplesA::CAPITestAStub,
         std::tuple< int32_t, std::string>,
@@ -75,6 +104,34 @@ public:
             _connection,
             std::dynamic_pointer_cast< CAPITestAStub>(_stub)),
         getCAPITestAInterfaceVersionStubDispatcher(&CAPITestAStub::lockInterfaceVersionAttribute, &CAPITestAStub::getInterfaceVersion, false, true),
+        getXAttributeStubDispatcher(
+            &::v1::commonapi::examplesA::CAPITestAStub::lockXAttribute,
+            &::v1::commonapi::examplesA::CAPITestAStub::getXAttribute,
+            false,
+            _stub->hasElement(2)),
+        setXAttributeStubDispatcher(
+            &::v1::commonapi::examplesA::CAPITestAStub::lockXAttribute,
+            &::v1::commonapi::examplesA::CAPITestAStub::getXAttribute,
+            &CAPITestAStubRemoteEvent::onRemoteSetXAttribute,
+            &CAPITestAStubRemoteEvent::onRemoteXAttributeChanged,
+            &CAPITestAStubAdapter::fireXAttributeChanged,
+            false,
+            _stub->hasElement(2))
+        ,
+        getA1AttributeStubDispatcher(
+            &::v1::commonapi::examplesA::CAPITestAStub::lockA1Attribute,
+            &::v1::commonapi::examplesA::CAPITestAStub::getA1Attribute,
+            false,
+            _stub->hasElement(3)),
+        setA1AttributeStubDispatcher(
+            &::v1::commonapi::examplesA::CAPITestAStub::lockA1Attribute,
+            &::v1::commonapi::examplesA::CAPITestAStub::getA1Attribute,
+            &CAPITestAStubRemoteEvent::onRemoteSetA1Attribute,
+            &CAPITestAStubRemoteEvent::onRemoteA1AttributeChanged,
+            &CAPITestAStubAdapter::fireA1AttributeChanged,
+            false,
+            _stub->hasElement(3))
+        ,
         fooStubDispatcher(
             &CAPITestAStub::foo,
             false,
@@ -83,13 +140,33 @@ public:
             std::make_tuple(static_cast< ::v1::commonapi::examplesA::CAPITestA_::stdErrorTypeEnumDeployment_t * >(nullptr), static_cast< CommonAPI::SomeIP::IntegerDeployment<int32_t>* >(nullptr), &::v1::commonapi::examplesA::CAPITestA_::foo_y2Deployment))
         
     {
+        CAPITestASomeIPStubAdapterHelper::addStubDispatcher( { CommonAPI::SomeIP::method_id_t(0xbb8) }, &getXAttributeStubDispatcher );
+        CAPITestASomeIPStubAdapterHelper::addStubDispatcher( { CommonAPI::SomeIP::method_id_t(0xbb9) }, &setXAttributeStubDispatcher );
+        CAPITestASomeIPStubAdapterHelper::addStubDispatcher( { CommonAPI::SomeIP::method_id_t(0xbba) }, &getA1AttributeStubDispatcher );
+        CAPITestASomeIPStubAdapterHelper::addStubDispatcher( { CommonAPI::SomeIP::method_id_t(0xbbb) }, &setA1AttributeStubDispatcher );
         CAPITestASomeIPStubAdapterHelper::addStubDispatcher( { CommonAPI::SomeIP::method_id_t(0x7530) }, &fooStubDispatcher );
+        std::shared_ptr<CommonAPI::SomeIP::ClientId> itsClient = std::make_shared<CommonAPI::SomeIP::ClientId>(0xFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+
         // Provided events/fields
         {
             std::set<CommonAPI::SomeIP::eventgroup_id_t> itsEventGroups;
             itsEventGroups.insert(CommonAPI::SomeIP::eventgroup_id_t(0x80f2));
             CommonAPI::SomeIP::StubAdapter::registerEvent(CommonAPI::SomeIP::event_id_t(0x80f2), itsEventGroups, CommonAPI::SomeIP::event_type_e::ET_EVENT, CommonAPI::SomeIP::reliability_type_e::RT_UNRELIABLE);
         }
+        if (_stub->hasElement(2)) {
+            std::set<CommonAPI::SomeIP::eventgroup_id_t> itsEventGroups;
+            itsEventGroups.insert(CommonAPI::SomeIP::eventgroup_id_t(CommonAPI::SomeIP::eventgroup_id_t(0x80fc)));
+            CommonAPI::SomeIP::StubAdapter::registerEvent(CommonAPI::SomeIP::event_id_t(0x80fc), itsEventGroups, CommonAPI::SomeIP::event_type_e::ET_FIELD, CommonAPI::SomeIP::reliability_type_e::RT_RELIABLE);
+            fireXAttributeChanged(std::dynamic_pointer_cast< ::v1::commonapi::examplesA::CAPITestAStub>(_stub)->getXAttribute(itsClient));
+        }
+
+        if (_stub->hasElement(3)) {
+            std::set<CommonAPI::SomeIP::eventgroup_id_t> itsEventGroups;
+            itsEventGroups.insert(CommonAPI::SomeIP::eventgroup_id_t(CommonAPI::SomeIP::eventgroup_id_t(0x80fd)));
+            CommonAPI::SomeIP::StubAdapter::registerEvent(CommonAPI::SomeIP::event_id_t(0x80fd), itsEventGroups, CommonAPI::SomeIP::event_type_e::ET_FIELD, CommonAPI::SomeIP::reliability_type_e::RT_RELIABLE);
+            fireA1AttributeChanged(std::dynamic_pointer_cast< ::v1::commonapi::examplesA::CAPITestAStub>(_stub)->getA1Attribute(itsClient));
+        }
+
     }
 
     // Register/Unregister event handlers for selective broadcasts
@@ -97,6 +174,42 @@ public:
     void unregisterSelectiveEventHandlers();
 
 };
+
+template <typename _Stub, typename... _Stubs>
+void CAPITestASomeIPStubAdapterInternal<_Stub, _Stubs...>::fireXAttributeChanged(const int32_t &_value) {
+    CommonAPI::Deployable< int32_t, CommonAPI::SomeIP::IntegerDeployment<int32_t>> deployedValue(_value, static_cast< CommonAPI::SomeIP::IntegerDeployment<int32_t>* >(nullptr));
+    CommonAPI::SomeIP::StubEventHelper<
+        CommonAPI::SomeIP::SerializableArguments<
+            CommonAPI::Deployable<
+                int32_t,
+                CommonAPI::SomeIP::IntegerDeployment<int32_t>
+            >
+            >
+    >::sendEvent(
+        *this,
+        CommonAPI::SomeIP::event_id_t(0x80fc),
+        false,
+        deployedValue
+    );
+}
+
+template <typename _Stub, typename... _Stubs>
+void CAPITestASomeIPStubAdapterInternal<_Stub, _Stubs...>::fireA1AttributeChanged(const ::v1::commonapi::examplesA::CommonTypes::a1Struct &_value) {
+    CommonAPI::Deployable< ::v1::commonapi::examplesA::CommonTypes::a1Struct, ::v1::commonapi::examplesA::CommonTypes_::a1StructDeployment_t> deployedValue(_value, static_cast< ::v1::commonapi::examplesA::CommonTypes_::a1StructDeployment_t* >(nullptr));
+    CommonAPI::SomeIP::StubEventHelper<
+        CommonAPI::SomeIP::SerializableArguments<
+            CommonAPI::Deployable<
+                ::v1::commonapi::examplesA::CommonTypes::a1Struct,
+                ::v1::commonapi::examplesA::CommonTypes_::a1StructDeployment_t
+            >
+            >
+    >::sendEvent(
+        *this,
+        CommonAPI::SomeIP::event_id_t(0x80fd),
+        false,
+        deployedValue
+    );
+}
 
 template <typename _Stub, typename... _Stubs>
 void CAPITestASomeIPStubAdapterInternal<_Stub, _Stubs...>::fireMyStatusEvent(const int32_t &_myCurrentValue) {

@@ -47,7 +47,7 @@ bool SomeIpTestClient::init()
 
     std::set<vsomeip::eventgroup_t> its_groups;
     its_groups.insert(eventGroupA);
-    m_app->request_event(serviceIdA, instanceIdA, eventA, its_groups, vsomeip_v3::event_type_e::ET_EVENT);
+    m_app->request_event(serviceIdA, instanceIdA, eventA, its_groups, vsomeip_v3::event_type_e::ET_FIELD);
     m_app->subscribe(serviceIdA, instanceIdA, eventGroupA);
     return true;
 }

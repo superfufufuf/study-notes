@@ -8,10 +8,9 @@
  * http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef V1_COMMONAPI_EXAMPLESA_CAPI_Test_A_SOMEIP_DEPLOYMENT_HPP_
-#define V1_COMMONAPI_EXAMPLESA_CAPI_Test_A_SOMEIP_DEPLOYMENT_HPP_
+#ifndef V1_COMMONAPI_EXAMPLESA_COMMON_TYPES_SOMEIP_DEPLOYMENT_HPP_
+#define V1_COMMONAPI_EXAMPLESA_COMMON_TYPES_SOMEIP_DEPLOYMENT_HPP_
 
-#include <v1/commonapi/examplesA/CommonTypesSomeIPDeployment.hpp>
 
 #if !defined (COMMONAPI_INTERNAL_COMPILATION)
 #define COMMONAPI_INTERNAL_COMPILATION
@@ -26,24 +25,30 @@
 namespace v1 {
 namespace commonapi {
 namespace examplesA {
-namespace CAPITestA_ {
+namespace CommonTypes_ {
 
-// Interface-specific deployment types
-typedef CommonAPI::SomeIP::EnumerationDeployment<uint8_t> stdErrorTypeEnumDeployment_t;
+// typecollection-specific deployment types
+typedef CommonAPI::SomeIP::StructDeployment<
+    CommonAPI::SomeIP::StringDeployment,
+    CommonAPI::SomeIP::StructDeployment<
+        CommonAPI::SomeIP::IntegerDeployment<int32_t>,
+        CommonAPI::EmptyDeployment,
+        CommonAPI::EmptyDeployment
+    >
+> a1StructDeployment_t;
 
-// Type-specific deployments
+typedef CommonAPI::SomeIP::StructDeployment<
+    CommonAPI::SomeIP::IntegerDeployment<int32_t>,
+    CommonAPI::EmptyDeployment,
+    CommonAPI::EmptyDeployment
+> a2StructDeployment_t;
 
-// Attribute-specific deployments
 
-// Argument-specific deployment
-COMMONAPI_EXPORT extern CommonAPI::SomeIP::StringDeployment foo_x2Deployment;
-COMMONAPI_EXPORT extern CommonAPI::SomeIP::StringDeployment foo_y2Deployment;
+// typecollection-specific deployments
 
-// Broadcast-specific deployments
-
-} // namespace CAPITestA_
+} // namespace CommonTypes_
 } // namespace examplesA
 } // namespace commonapi
 } // namespace v1
 
-#endif // V1_COMMONAPI_EXAMPLESA_CAPI_Test_A_SOMEIP_DEPLOYMENT_HPP_
+#endif // V1_COMMONAPI_EXAMPLESA_COMMON_TYPES_SOMEIP_DEPLOYMENT_HPP_

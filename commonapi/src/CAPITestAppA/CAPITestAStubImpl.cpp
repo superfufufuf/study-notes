@@ -4,6 +4,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "CAPITestAStubImpl.hpp"
+#include "CAPIConst.h"
 
 using namespace v1_2::commonapi::examplesA;
 
@@ -19,8 +20,16 @@ CAPITestAStubImpl::~CAPITestAStubImpl()
 void CAPITestAStubImpl::incCounter()
 {
     cnt++;
-    fireMyStatusEvent((int32_t)cnt);
-    std::cout << "[ServerM]Send boardcast value = " << cnt << "!" << std::endl;
+    if (CurrentModel == RunModel_All || CurrentModel == RunModel_Broadcast)
+    {
+        fireMyStatusEvent((int32_t)cnt);
+        std::cout << "[ServerM]Send boardcast value = " << cnt << "!" << std::endl;
+    }
+    if (CurrentModel == RunModel_All || CurrentModel == RunModel_Notifier)
+    {
+        setXAttribute((int32_t)cnt);
+        std::cout << "[ServerM]Send notify value = " << cnt << "!" << std::endl;
+    }
 };
 
 void CAPITestAStubImpl::foo(const std::shared_ptr<CommonAPI::ClientId> _client,

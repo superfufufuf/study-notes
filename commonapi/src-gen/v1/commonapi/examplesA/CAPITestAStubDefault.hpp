@@ -73,9 +73,93 @@ public:
     COMMONAPI_EXPORT virtual void fireMyStatusEvent(const int32_t &_myCurrentValue) {
         CAPITestAStub::fireMyStatusEvent(_myCurrentValue);
     }
+    COMMONAPI_EXPORT virtual const int32_t &getXAttribute() {
+        return xAttributeValue_;
+    }
+    COMMONAPI_EXPORT virtual const int32_t &getXAttribute(const std::shared_ptr<CommonAPI::ClientId> _client) {
+        (void)_client;
+        return getXAttribute();
+    }
+    COMMONAPI_EXPORT virtual void setXAttribute(int32_t _value) {
+        const bool valueChanged = trySetXAttribute(std::move(_value));
+        if (valueChanged) {
+            fireXAttributeChanged(xAttributeValue_);
+        }
+    }
+    COMMONAPI_EXPORT virtual void setXAttribute(const std::shared_ptr<CommonAPI::ClientId> _client, int32_t _value) {
+        (void)_client;
+        setXAttribute(_value);
+    }
+    COMMONAPI_EXPORT virtual const ::v1::commonapi::examplesA::CommonTypes::a1Struct &getA1Attribute() {
+        return a1AttributeValue_;
+    }
+    COMMONAPI_EXPORT virtual const ::v1::commonapi::examplesA::CommonTypes::a1Struct &getA1Attribute(const std::shared_ptr<CommonAPI::ClientId> _client) {
+        (void)_client;
+        return getA1Attribute();
+    }
+    COMMONAPI_EXPORT virtual void setA1Attribute(::v1::commonapi::examplesA::CommonTypes::a1Struct _value) {
+        const bool valueChanged = trySetA1Attribute(std::move(_value));
+        if (valueChanged) {
+            fireA1AttributeChanged(a1AttributeValue_);
+        }
+    }
+    COMMONAPI_EXPORT virtual void setA1Attribute(const std::shared_ptr<CommonAPI::ClientId> _client, ::v1::commonapi::examplesA::CommonTypes::a1Struct _value) {
+        (void)_client;
+        setA1Attribute(_value);
+    }
 
 
 protected:
+    COMMONAPI_EXPORT virtual bool trySetXAttribute(int32_t _value) {
+        if (!validateXAttributeRequestedValue(_value))
+            return false;
+
+        bool valueChanged;
+        std::shared_ptr<CAPITestAStubAdapter> stubAdapter = CommonAPI::Stub<CAPITestAStubAdapter, CAPITestAStubRemoteEvent>::stubAdapter_.lock();
+        if(stubAdapter) {
+            stubAdapter->lockXAttribute(true);
+            valueChanged = (xAttributeValue_ != _value);
+            xAttributeValue_ = std::move(_value);
+            stubAdapter->lockXAttribute(false);
+        } else {
+            valueChanged = (xAttributeValue_ != _value);
+            xAttributeValue_ = std::move(_value);
+        }
+
+       return valueChanged;
+    }
+    COMMONAPI_EXPORT virtual bool validateXAttributeRequestedValue(const int32_t &_value) {
+        (void)_value;
+        return true;
+    }
+    COMMONAPI_EXPORT virtual void onRemoteXAttributeChanged() {
+        // No operation in default
+    }
+    COMMONAPI_EXPORT virtual bool trySetA1Attribute(::v1::commonapi::examplesA::CommonTypes::a1Struct _value) {
+        if (!validateA1AttributeRequestedValue(_value))
+            return false;
+
+        bool valueChanged;
+        std::shared_ptr<CAPITestAStubAdapter> stubAdapter = CommonAPI::Stub<CAPITestAStubAdapter, CAPITestAStubRemoteEvent>::stubAdapter_.lock();
+        if(stubAdapter) {
+            stubAdapter->lockA1Attribute(true);
+            valueChanged = (a1AttributeValue_ != _value);
+            a1AttributeValue_ = std::move(_value);
+            stubAdapter->lockA1Attribute(false);
+        } else {
+            valueChanged = (a1AttributeValue_ != _value);
+            a1AttributeValue_ = std::move(_value);
+        }
+
+       return valueChanged;
+    }
+    COMMONAPI_EXPORT virtual bool validateA1AttributeRequestedValue(const ::v1::commonapi::examplesA::CommonTypes::a1Struct &_value) {
+        (void)_value;
+        return true;
+    }
+    COMMONAPI_EXPORT virtual void onRemoteA1AttributeChanged() {
+        // No operation in default
+    }
     class COMMONAPI_EXPORT_CLASS_EXPLICIT RemoteEventHandler: public virtual CAPITestAStubRemoteEvent {
     public:
         COMMONAPI_EXPORT RemoteEventHandler(CAPITestAStubDefault *_defaultStub)
@@ -83,6 +167,34 @@ protected:
               defaultStub_(_defaultStub) {
         }
 
+        COMMONAPI_EXPORT virtual void onRemoteXAttributeChanged() {
+            assert(defaultStub_ !=NULL);
+            defaultStub_->onRemoteXAttributeChanged();
+        }
+
+        COMMONAPI_EXPORT virtual bool onRemoteSetXAttribute(int32_t _value) {
+            assert(defaultStub_ !=NULL);
+            return defaultStub_->trySetXAttribute(std::move(_value));
+        }
+
+        COMMONAPI_EXPORT virtual bool onRemoteSetXAttribute(const std::shared_ptr<CommonAPI::ClientId> _client, int32_t _value) {
+            (void)_client;
+            return onRemoteSetXAttribute(_value);
+        }
+        COMMONAPI_EXPORT virtual void onRemoteA1AttributeChanged() {
+            assert(defaultStub_ !=NULL);
+            defaultStub_->onRemoteA1AttributeChanged();
+        }
+
+        COMMONAPI_EXPORT virtual bool onRemoteSetA1Attribute(::v1::commonapi::examplesA::CommonTypes::a1Struct _value) {
+            assert(defaultStub_ !=NULL);
+            return defaultStub_->trySetA1Attribute(std::move(_value));
+        }
+
+        COMMONAPI_EXPORT virtual bool onRemoteSetA1Attribute(const std::shared_ptr<CommonAPI::ClientId> _client, ::v1::commonapi::examplesA::CommonTypes::a1Struct _value) {
+            (void)_client;
+            return onRemoteSetA1Attribute(_value);
+        }
 
     private:
         CAPITestAStubDefault *defaultStub_;
@@ -92,6 +204,8 @@ protected:
 
 private:
 
+    int32_t xAttributeValue_ {};
+    ::v1::commonapi::examplesA::CommonTypes::a1Struct a1AttributeValue_ {};
 
     CommonAPI::Version interfaceVersion_;
 };

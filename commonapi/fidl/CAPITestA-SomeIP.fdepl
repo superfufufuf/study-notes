@@ -39,6 +39,33 @@ define org.genivi.commonapi.someip.deployment for interface commonapi.examplesA.
         MY_FAULT {
         }
     }
+
+    attribute x {
+        SomeIpGetterID = 3000
+        SomeIpSetterID = 3001
+        SomeIpNotifierID = 33020
+        SomeIpNotifierEventGroups = { 33020 }
+
+        SomeIpAttributeReliable = true
+    }
+
+    attribute a1 {
+        SomeIpGetterID = 3002
+        SomeIpSetterID = 3003
+        SomeIpNotifierID = 33021
+        SomeIpNotifierEventGroups = { 33021 }
+
+        SomeIpAttributeReliable = true
+    }
+}
+
+define org.genivi.commonapi.someip.deployment for typeCollection commonapi.examplesA.CommonTypes {
+    struct a1Struct {
+    }
+
+    struct a2Struct {
+    }
+
 }
 
 define org.genivi.commonapi.someip.deployment for provider as Service {
@@ -50,5 +77,5 @@ define org.genivi.commonapi.someip.deployment for provider as Service {
         SomeIpUnicastAddress = "192.168.0.2"
         SomeIpReliableUnicastPort = 30500
         SomeIpUnreliableUnicastPort = 30501
-}
+    }
 }

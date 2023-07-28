@@ -13,17 +13,22 @@
 #include <v1/commonapi/examplesA/CAPITestA.hpp>
 
 
+#include <v1/commonapi/examplesA/CommonTypes.hpp>
 
 #if !defined (COMMONAPI_INTERNAL_COMPILATION)
 #define COMMONAPI_INTERNAL_COMPILATION
 #define HAS_DEFINED_COMMONAPI_INTERNAL_COMPILATION_HERE
 #endif
 
+#include <CommonAPI/Deployment.hpp>
 #include <CommonAPI/InputStream.hpp>
 #include <CommonAPI/OutputStream.hpp>
+#include <CommonAPI/Struct.hpp>
 #include <cstdint>
+#include <string>
 #include <vector>
 
+#include <CommonAPI/Attribute.hpp>
 #include <CommonAPI/Event.hpp>
 #include <CommonAPI/Proxy.hpp>
 #include <functional>
@@ -44,12 +49,16 @@ public:
     typedef CommonAPI::Event<
         int32_t
     > MyStatusEvent;
+    typedef CommonAPI::ObservableAttribute<int32_t> XAttribute;
+    typedef CommonAPI::ObservableAttribute<::v1::commonapi::examplesA::CommonTypes::a1Struct> A1Attribute;
 
     typedef std::function<void(const CommonAPI::CallStatus&, const CAPITestA::stdErrorTypeEnum&, const int32_t&, const std::string&)> FooAsyncCallback;
 
     virtual void foo(int32_t _x1, std::string _x2, CommonAPI::CallStatus &_internalCallStatus, CAPITestA::stdErrorTypeEnum &_error, int32_t &_y1, std::string &_y2, const CommonAPI::CallInfo *_info = nullptr) = 0;
     virtual std::future<CommonAPI::CallStatus> fooAsync(const int32_t &_x1, const std::string &_x2, FooAsyncCallback _callback = nullptr, const CommonAPI::CallInfo *_info = nullptr) = 0;
     virtual MyStatusEvent& getMyStatusEvent() = 0;
+    virtual XAttribute& getXAttribute() = 0;
+    virtual A1Attribute& getA1Attribute() = 0;
 
     virtual std::future<void> getCompletionFuture() = 0;
 };
