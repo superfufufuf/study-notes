@@ -75,7 +75,7 @@ public:
 private:
     CommonAPI::SomeIP::ObservableAttribute<CommonAPI::SomeIP::Attribute<XAttribute, CommonAPI::SomeIP::IntegerDeployment<int32_t>>> x_;
     CommonAPI::SomeIP::ObservableAttribute<CommonAPI::SomeIP::Attribute<A1Attribute, ::v1::commonapi::examplesA::CommonTypes_::a1StructDeployment_t>> a1_;
-    CommonAPI::SomeIP::Event<MyStatusEvent, CommonAPI::Deployable< int32_t, CommonAPI::SomeIP::IntegerDeployment<int32_t> >> myStatus_;
+    CommonAPI::SomeIP::Event<MyStatusEvent, CommonAPI::Deployable< int32_t, CommonAPI::SomeIP::IntegerDeployment<int32_t> >, CommonAPI::Deployable< uint8_t, CommonAPI::SomeIP::IntegerDeployment<uint8_t> >, CommonAPI::Deployable< bool, CommonAPI::EmptyDeployment >, CommonAPI::Deployable< std::string, CommonAPI::SomeIP::StringDeployment >, CommonAPI::Deployable< CommonAPI::ByteBuffer, CommonAPI::SomeIP::ByteBufferDeployment >> myStatus_;
 
     std::promise<void> completed_;
 };

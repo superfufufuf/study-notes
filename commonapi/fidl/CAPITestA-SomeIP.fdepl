@@ -30,6 +30,9 @@ define org.genivi.commonapi.someip.deployment for interface commonapi.examplesA.
         SomeIpEventGroups = { 33010 }
 
         out {
+            notes {
+                SomeIpStringEncoding = utf16le
+            }
         }
     }
     

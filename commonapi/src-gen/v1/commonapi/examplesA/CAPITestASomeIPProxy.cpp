@@ -50,7 +50,7 @@ CAPITestASomeIPProxy::CAPITestASomeIPProxy(
         : CommonAPI::SomeIP::Proxy(_address, _connection),
           x_(*this, CommonAPI::SomeIP::eventgroup_id_t(0x80fc), CommonAPI::SomeIP::event_id_t(0x80fc), CommonAPI::SomeIP::method_id_t(0xbb8), true, CommonAPI::SomeIP::reliability_type_e::RT_RELIABLE, false, CommonAPI::SomeIP::method_id_t(0xbb9), true, static_cast< CommonAPI::SomeIP::IntegerDeployment<int32_t>* >(nullptr)),
           a1_(*this, CommonAPI::SomeIP::eventgroup_id_t(0x80fd), CommonAPI::SomeIP::event_id_t(0x80fd), CommonAPI::SomeIP::method_id_t(0xbba), true, CommonAPI::SomeIP::reliability_type_e::RT_RELIABLE, false, CommonAPI::SomeIP::method_id_t(0xbbb), true, static_cast< ::v1::commonapi::examplesA::CommonTypes_::a1StructDeployment_t* >(nullptr)),
-          myStatus_(*this, 0x80f2, CommonAPI::SomeIP::event_id_t(0x80f2), CommonAPI::SomeIP::event_type_e::ET_EVENT , CommonAPI::SomeIP::reliability_type_e::RT_UNRELIABLE, false, std::make_tuple(static_cast< CommonAPI::SomeIP::IntegerDeployment<int32_t>* >(nullptr)))
+          myStatus_(*this, 0x80f2, CommonAPI::SomeIP::event_id_t(0x80f2), CommonAPI::SomeIP::event_type_e::ET_EVENT , CommonAPI::SomeIP::reliability_type_e::RT_UNRELIABLE, false, std::make_tuple(static_cast< CommonAPI::SomeIP::IntegerDeployment<int32_t>* >(nullptr), static_cast< CommonAPI::SomeIP::IntegerDeployment<uint8_t>* >(nullptr), static_cast< CommonAPI::EmptyDeployment* >(nullptr), &::v1::commonapi::examplesA::CAPITestA_::myStatus_notesDeployment, static_cast< CommonAPI::SomeIP::ByteBufferDeployment* >(nullptr)))
 {
 }
 

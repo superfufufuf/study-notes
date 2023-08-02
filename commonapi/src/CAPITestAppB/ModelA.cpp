@@ -65,8 +65,19 @@ void ClientM1()
     if (CurrentModel == RunModel_All || CurrentModel == RunModel_Broadcast)
     {
         // Subscribe to broadcast
-        myProxy->getMyStatusEvent().subscribe([&](const int32_t &val)
-                                              { std::cout << "[ClientM1]Received boardcast event: " << val << std::endl; });
+        myProxy->getMyStatusEvent().subscribe([&](const int32_t &_myCurrentValue, const uint8_t &_myState, const bool &_bValid, const std::string &_notes, const CommonAPI::ByteBuffer &_bigData)
+                                              { 
+                                                std::string bigData;
+                                                for (auto ch : _bigData)
+                                                {
+                                                    bigData.push_back(ch);
+                                                }
+                                                std::cout << "[ClientM1]Received boardcast _myCurrentValue: " << _myCurrentValue
+                                                          << ", _myState: " << _myState
+                                                          << ", _bValid: " << _bValid
+                                                          << ", _notes: " << _notes
+                                                          << ", bigData: " << bigData
+                                                          << std::endl; });
     }
 
     CommonAPI::CallStatus callStatus;

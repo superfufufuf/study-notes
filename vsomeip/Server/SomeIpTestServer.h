@@ -18,6 +18,7 @@ public:
     void start();
     void stop();
     void terminate();
+    void testCommonapi();
     void PublishData(const std::string &data);
 
 private:

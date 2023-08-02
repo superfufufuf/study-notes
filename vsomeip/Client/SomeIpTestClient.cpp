@@ -48,7 +48,7 @@ bool SomeIpTestClient::init()
     std::set<vsomeip::eventgroup_t> its_groups;
     its_groups.insert(eventGroupA);
     m_app->request_event(serviceIdA, instanceIdA, eventA, its_groups, vsomeip_v3::event_type_e::ET_FIELD);
-    m_app->subscribe(serviceIdA, instanceIdA, eventGroupA);
+    m_app->subscribe(serviceIdA, instanceIdA, eventGroupA, major_versionA);
     return true;
 }
 
@@ -107,7 +107,7 @@ void SomeIpTestClient::on_state_cbk(vsomeip::state_type_e _state)
     {
         // we are registered at the runtime now we can request the service
         // and wait for the on_availability callback to be called
-        m_app->request_service(serviceIdA, instanceIdA);
+        m_app->request_service(serviceIdA, instanceIdA, major_versionA, minor_versionA);
     }
 }
 
@@ -125,6 +125,7 @@ void SomeIpTestClient::on_message_cbk(const std::shared_ptr<vsomeip::message> &_
 {
     cout << "on_message_cbk, _service:" << _response->get_service()
          << ", _instance: " << _response->get_instance()
+         << ", _method: " << _response->get_method()
          << ", message_type: " << static_cast<int>(_response->get_message_type())
          << ", return_code: " << static_cast<int>(_response->get_return_code()) << endl;
 

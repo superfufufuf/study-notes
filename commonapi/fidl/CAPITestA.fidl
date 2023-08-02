@@ -26,6 +26,10 @@ interface CAPITestA {
     broadcast myStatus {
         out {
             Int32 myCurrentValue
+            UInt8 myState
+            Boolean bValid
+            String notes
+            ByteBuffer bigData
         }
     }
 

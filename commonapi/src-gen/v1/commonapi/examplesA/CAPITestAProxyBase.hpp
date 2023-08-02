@@ -47,7 +47,7 @@ class CAPITestAProxyBase
     : virtual public CommonAPI::Proxy {
 public:
     typedef CommonAPI::Event<
-        int32_t
+        int32_t, uint8_t, bool, std::string, CommonAPI::ByteBuffer
     > MyStatusEvent;
     typedef CommonAPI::ObservableAttribute<int32_t> XAttribute;
     typedef CommonAPI::ObservableAttribute<::v1::commonapi::examplesA::CommonTypes::a1Struct> A1Attribute;

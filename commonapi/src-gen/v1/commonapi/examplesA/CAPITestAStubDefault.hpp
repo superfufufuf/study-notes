@@ -70,8 +70,8 @@ public:
         std::string y2 = "";
         _reply(error, y1, y2);
     }
-    COMMONAPI_EXPORT virtual void fireMyStatusEvent(const int32_t &_myCurrentValue) {
-        CAPITestAStub::fireMyStatusEvent(_myCurrentValue);
+    COMMONAPI_EXPORT virtual void fireMyStatusEvent(const int32_t &_myCurrentValue, const uint8_t &_myState, const bool &_bValid, const std::string &_notes, const CommonAPI::ByteBuffer &_bigData) {
+        CAPITestAStub::fireMyStatusEvent(_myCurrentValue, _myState, _bValid, _notes, _bigData);
     }
     COMMONAPI_EXPORT virtual const int32_t &getXAttribute() {
         return xAttributeValue_;

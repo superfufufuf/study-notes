@@ -7,6 +7,7 @@
 #include <iostream>
 #include <memory>
 #include <map>
+#include <string.h>
 #include "LogManager.h"
 
 using namespace std;
@@ -73,7 +74,7 @@ public:
     }
 };
 
-template<typename _Map, typename Fun>
+template <typename _Map, typename Fun>
 void map_remove_if(_Map &_map, Fun _fun)
 {
     for (auto itor = _map.begin(); itor != _map.end();)
@@ -87,6 +88,114 @@ void map_remove_if(_Map &_map, Fun _fun)
             itor++;
         }
     }
+}
+
+template <typename, typename, size_t>
+class TTestA;
+
+template <typename R, typename B, size_t Q>
+class TTestA
+{
+public:
+    TTestA()
+    {
+    }
+
+    static void print(R _r, B _b)
+    {
+        cout << "[TTestA]" << _r << "," << _b << ", n:" << Q << endl;
+    }
+
+private:
+    char str[Q];
+};
+
+template <typename R, size_t Q>
+class TTestA<R, int, Q>
+{
+public:
+    TTestA()
+    {
+    }
+
+    static void print(R _r, int _b)
+    {
+        cout << "[TTestA<R, int , Q>]" << _r << "," << _b << ", n:" << Q << endl;
+    }
+
+private:
+    char str[Q];
+};
+
+template <template <typename K> typename T, typename R, size_t Q>
+class TTestA<T<R>, int, Q>
+{
+public:
+    TTestA()
+    {
+    }
+
+    static void print(R _r, int _b)
+    {
+        ;
+        cout << "[TTestA<T<R>, int, Q>]";
+        for (auto value : _r)
+        {
+            cout << value << ",";
+        }
+        cout << "," << _b << ", n:" << Q << endl;
+    }
+
+private:
+    char str[Q];
+};
+
+template <typename T>
+void printArgs(T &&t)
+{
+    cout << t << endl;
+}
+
+template <typename T, typename... Args>
+void printArgs(T &&t, Args &&...args)
+{
+    cout << t << ",";
+    printArgs(forward<Args>(args)...);
+}
+
+template <class T>
+typename std::enable_if<std::is_integral<T>::value, bool>::type is_odd(T i)
+{
+    return bool(i % 2);
+}
+
+template <typename T, typename F = typename std::enable_if<std::is_integral<T>::value, void>::type>
+void PrintDatalength(const T data)
+{
+    cout << std::is_same<F, void>::value << endl;
+    cout << std::is_same<F, bool>::value << endl;
+    cout << std::is_same<F, uint8_t>::value << endl;
+    cout << std::is_same<F, uint16_t>::value << endl;
+    cout << std::is_same<F, int32_t>::value << endl;
+    cout << "data[" << data << "]: " << sizeof(data) << " byte" << endl;
+}
+
+void TestTemplate()
+{
+    list<int> testList;
+    testList.push_back(12);
+    testList.push_back(14);
+    cout << is_odd(231) << "," << is_odd(232) << endl;
+    PrintDatalength(true);
+    PrintDatalength('a');
+    PrintDatalength(uint16_t(6000000));
+    PrintDatalength(int32_t(425));
+
+    TTestA<int, int, 10> ta;
+
+    ta.print(1104, 2260);
+    // TTestA<list<int>, string, 12>::print(testList, "11550");
+    ta.print(21412, 3740155);
 }
 
 #endif

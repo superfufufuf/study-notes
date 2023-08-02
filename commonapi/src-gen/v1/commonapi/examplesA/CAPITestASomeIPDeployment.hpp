@@ -40,6 +40,7 @@ COMMONAPI_EXPORT extern CommonAPI::SomeIP::StringDeployment foo_x2Deployment;
 COMMONAPI_EXPORT extern CommonAPI::SomeIP::StringDeployment foo_y2Deployment;
 
 // Broadcast-specific deployments
+COMMONAPI_EXPORT extern CommonAPI::SomeIP::StringDeployment myStatus_notesDeployment;
 
 } // namespace CAPITestA_
 } // namespace examplesA

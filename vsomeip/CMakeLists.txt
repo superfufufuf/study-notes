@@ -11,6 +11,7 @@ find_package(vsomeip3)
 
 include_directories(
 	./
+	CAPIPayloadTransition
 	Client
 	Server
     ${VSOMEIP_INCLUDE_DIRS}

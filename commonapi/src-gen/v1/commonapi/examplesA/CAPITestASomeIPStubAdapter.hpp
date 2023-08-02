@@ -53,7 +53,7 @@ public:
     
     void fireA1AttributeChanged(const ::v1::commonapi::examplesA::CommonTypes::a1Struct &_value);
     
-    void fireMyStatusEvent(const int32_t &_myCurrentValue);
+    void fireMyStatusEvent(const int32_t &_myCurrentValue, const uint8_t &_myState, const bool &_bValid, const std::string &_notes, const CommonAPI::ByteBuffer &_bigData);
 
     void deactivateManagedInstances() {}
     
@@ -212,15 +212,26 @@ void CAPITestASomeIPStubAdapterInternal<_Stub, _Stubs...>::fireA1AttributeChange
 }
 
 template <typename _Stub, typename... _Stubs>
-void CAPITestASomeIPStubAdapterInternal<_Stub, _Stubs...>::fireMyStatusEvent(const int32_t &_myCurrentValue) {
+void CAPITestASomeIPStubAdapterInternal<_Stub, _Stubs...>::fireMyStatusEvent(const int32_t &_myCurrentValue, const uint8_t &_myState, const bool &_bValid, const std::string &_notes, const CommonAPI::ByteBuffer &_bigData) {
     CommonAPI::Deployable< int32_t, CommonAPI::SomeIP::IntegerDeployment<int32_t>> deployed_myCurrentValue(_myCurrentValue, static_cast< CommonAPI::SomeIP::IntegerDeployment<int32_t>* >(nullptr));
+    CommonAPI::Deployable< uint8_t, CommonAPI::SomeIP::IntegerDeployment<uint8_t>> deployed_myState(_myState, static_cast< CommonAPI::SomeIP::IntegerDeployment<uint8_t>* >(nullptr));
+    CommonAPI::Deployable< std::string, CommonAPI::SomeIP::StringDeployment> deployed_notes(_notes, &::v1::commonapi::examplesA::CAPITestA_::myStatus_notesDeployment);
+    CommonAPI::Deployable< CommonAPI::ByteBuffer, CommonAPI::SomeIP::ByteBufferDeployment> deployed_bigData(_bigData, static_cast< CommonAPI::SomeIP::ByteBufferDeployment* >(nullptr));
     CommonAPI::SomeIP::StubEventHelper<CommonAPI::SomeIP::SerializableArguments<  CommonAPI::Deployable< int32_t, CommonAPI::SomeIP::IntegerDeployment<int32_t> > 
+    ,  CommonAPI::Deployable< uint8_t, CommonAPI::SomeIP::IntegerDeployment<uint8_t> > 
+    ,  bool
+    ,  CommonAPI::Deployable< std::string, CommonAPI::SomeIP::StringDeployment > 
+    ,  CommonAPI::Deployable< CommonAPI::ByteBuffer, CommonAPI::SomeIP::ByteBufferDeployment > 
     >>
         ::sendEvent(
             *this,
             CommonAPI::SomeIP::event_id_t(0x80f2),
             false,
              deployed_myCurrentValue 
+            ,  deployed_myState 
+            , _bValid
+            ,  deployed_notes 
+            ,  deployed_bigData 
     );
 }
 

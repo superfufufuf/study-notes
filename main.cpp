@@ -43,10 +43,11 @@ int main(int argc, char const *argv[])
 #endif
     // MyEGLClass myEgl(displayId, windowId, windowRect);
     // thread(&MyEGLClass::Render, &myEgl).detach();
-    thread([&](){
+    thread([&]()
+           {
         MyEGLClass myEgl(displayId, windowId, windowRect);
-        myEgl.Render();
-    }).detach();
+        myEgl.Render(); })
+        .detach();
 
 #if TEST_ID == 1
     Ptr_Test1();
@@ -96,8 +97,8 @@ int main(int argc, char const *argv[])
     cout << i << "," << std::hex << std::showbase << std::showpoint
          << i << "," << j << endl;
 #elif TEST_ID == 10
+    TestTemplate();
 #endif
-
     _LOG("all things has done.", LogLevel::INFO);
     while (true)
     {

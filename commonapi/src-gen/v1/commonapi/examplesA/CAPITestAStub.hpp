@@ -60,7 +60,7 @@ class CAPITestAStubAdapter
     * Sends a broadcast event for myStatus. Should not be called directly.
     * Instead, the "fire<broadcastName>Event" methods of the stub should be used.
     */
-    virtual void fireMyStatusEvent(const int32_t &_myCurrentValue) = 0;
+    virtual void fireMyStatusEvent(const int32_t &_myCurrentValue, const uint8_t &_myState, const bool &_bValid, const std::string &_notes, const CommonAPI::ByteBuffer &_bigData) = 0;
     ///Notifies all remote listeners about a change of value of the attribute x.
     virtual void fireXAttributeChanged(const int32_t &x) = 0;
     ///Notifies all remote listeners about a change of value of the attribute a1.
@@ -143,10 +143,10 @@ public:
     /// This is the method that will be called on remote calls on the method foo.
     virtual void foo(const std::shared_ptr<CommonAPI::ClientId> _client, int32_t _x1, std::string _x2, fooReply_t _reply) = 0;
     /// Sends a broadcast event for myStatus.
-    virtual void fireMyStatusEvent(const int32_t &_myCurrentValue) {
+    virtual void fireMyStatusEvent(const int32_t &_myCurrentValue, const uint8_t &_myState, const bool &_bValid, const std::string &_notes, const CommonAPI::ByteBuffer &_bigData) {
         auto stubAdapter = CommonAPI::Stub<CAPITestAStubAdapter, CAPITestAStubRemoteEvent>::stubAdapter_.lock();
         if (stubAdapter)
-            stubAdapter->fireMyStatusEvent(_myCurrentValue);
+            stubAdapter->fireMyStatusEvent(_myCurrentValue, _myState, _bValid, _notes, _bigData);
     }
     /// Provides getter access to the attribute x
     virtual const int32_t &getXAttribute(const std::shared_ptr<CommonAPI::ClientId> _client) = 0;

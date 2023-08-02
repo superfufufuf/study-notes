@@ -23,6 +23,7 @@ CommonAPI::SomeIP::StringDeployment foo_x2Deployment(0, 4, CommonAPI::SomeIP::St
 CommonAPI::SomeIP::StringDeployment foo_y2Deployment(0, 4, CommonAPI::SomeIP::StringEncoding::UTF16LE);
 
 // Broadcast-specific deployments
+CommonAPI::SomeIP::StringDeployment myStatus_notesDeployment(0, 4, CommonAPI::SomeIP::StringEncoding::UTF16LE);
 
 } // namespace CAPITestA_
 } // namespace examplesA

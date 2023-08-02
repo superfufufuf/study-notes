@@ -22,7 +22,13 @@ void CAPITestAStubImpl::incCounter()
     cnt++;
     if (CurrentModel == RunModel_All || CurrentModel == RunModel_Broadcast)
     {
-        fireMyStatusEvent((int32_t)cnt);
+        CommonAPI::ByteBuffer bigData;
+        uint8_t chArr[] = {'I', ' ', 'i', 's', ' ', 'a', 'n', ' ', 'f', 'i', 's', 'h'};
+        for (auto ch : chArr)
+        {
+            bigData.push_back(ch);
+        }
+        fireMyStatusEvent((int32_t)cnt, '8', true, "CAPITest", bigData);
         std::cout << "[ServerM]Send boardcast value = " << cnt << "!" << std::endl;
     }
     if (CurrentModel == RunModel_All || CurrentModel == RunModel_Notifier)
