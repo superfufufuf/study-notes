@@ -3,3 +3,4 @@
 if(B_BULID_NANOMSG)
     add_subdirectory(nanomsg)
 endif()
+add_subdirectory(libraryTest)

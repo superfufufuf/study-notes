@@ -93,6 +93,8 @@ if(D_FOR_X11_)
     add_executable(tool ${SRC_LIST})
     target_link_libraries(${PROJECT_NAME}
             pthread
+            dl
+            mylibrary
             X11
             EGL
             GLESv2
@@ -103,6 +105,8 @@ elseif(D_FOR_WAYLAND_)
     add_executable(tool ${SRC_LIST})
     target_link_libraries(${PROJECT_NAME}
             pthread
+            dl
+            mylibrary
             wayland-client
             wayland-egl
             EGL
