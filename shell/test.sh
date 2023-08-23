@@ -35,21 +35,6 @@ need_cmake() {
 	exit 1
 }
 
-help() {
-	echo "This configure script is a convenience wrapper around"
-	echo "CMake.  Only a limited subset of configuration options"
-	echo "are supported.  For a fully featured build, use CMake".
-	echo
-	echo "Execute as $0 [options]"
-	echo
-	echo "Options supported are:"
-	echo
-	echo " --prefix={path}      Set installation directory prefix."
-	echo " --with-cmake={path}  Location of CMake executable."
-	echo
-	exit 1
-}
-
 # Argument parsing
 PREFIX=/usr/local
 while [ -n "$1" ]; do
@@ -63,9 +48,6 @@ while [ -n "$1" ]; do
 		shift
 		;;
 	--prefix)
-		if [ -z "$2" ]; then
-			help
-		fi
 		PREFIX="$2"
 		shift 2
 		;;
@@ -74,7 +56,6 @@ while [ -n "$1" ]; do
 		shift
 		;;
 	*)
-		help
 		;;
 	esac
 done
@@ -88,3 +69,25 @@ GENERATOR="Unix Makefiles"
 
 echo ""$CMAKE" -G "$GENERATOR" "-DCMAKE_INSTALL_PREFIX=$PREFIX" $SRCDIR"
 #"$CMAKE" -G "$GENERATOR" "-DCMAKE_INSTALL_PREFIX=$PREFIX" $SRCDIR
+#!/bin/bash
+
+# 定义颜色变量
+RED='\E[1;31m'        # 红
+GREEN='\E[1;32m'      # 绿
+YELOW='\E[1;33m'      # 黄
+BLUE='\E[1;34m'       # 蓝
+PINK='\E[1;35m'       # 粉红
+SHAN='\E[33;5m'       #黄色闪烁警示
+RES='\E[0m'           # 清除颜色
+
+#用 echo -e 来调用
+echo -e "${SHAN} this is yelow flashing warning ${RES}"  # 黄色闪烁警示调用效果
+echo -e "${GREEN} this is green color ${RES}"
+echo -e "${YELOW} this is red yelow ${RES}"
+echo -e "${BLUE} this is blue color ${RES}"
+echo -e "${PINK} this is pink color ${RES}"
+for i in {1..100}
+do
+    printf "\rProcess: %3d" $i
+    sleep 1
+done
