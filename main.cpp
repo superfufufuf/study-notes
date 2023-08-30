@@ -1,4 +1,5 @@
 #include <dlfcn.h>
+#include <any>
 
 #include "const.h"
 #include "share_ptr.h"
@@ -26,8 +27,9 @@ typedef int (*operationFunc)(int, int);
 #define TEST_ID_Destruct_Test 8
 #define TEST_ID_cout_Test 9
 #define TEST_ID_library_Test 10
+#define TEST_ID_Any 11
 
-#define TEST_ID TEST_ID_library_Test
+#define TEST_ID TEST_ID_Any
 
 std::string Fun1(const std::string &_str, const int _index)
 {
@@ -146,7 +148,25 @@ int main(int argc, char const *argv[])
     {
         cout << errorCode << endl;
     }
+
+#elif TEST_ID == TEST_ID_Any
+    std::any a = 1;
+    cout << a.type().name() << " " << std::any_cast<int>(a) << endl;
+    a = 2.2f;
+    cout << a.type().name() << " " << std::any_cast<float>(a) << endl;
+    if (a.has_value())
+    {
+        cout << "a has value" << endl;
+    }
+    a.reset();
+    if (a.has_value())
+    {
+        cout << "a has value" << endl;
+    }
+    a = std::string("a");
+    cout << a.type().name() << " " << std::any_cast<std::string>(a) << endl;
 #endif
+
     _LOG("all things has done.", LogLevel::INFO);
     while (true)
     {

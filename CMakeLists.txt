@@ -1,5 +1,7 @@
 # set version
 cmake_minimum_required(VERSION 3.8.2)
+
+set(CMAKE_CXX_STANDARD 17)
  
 # 重新命名工程名称，不定义就是项目名称
 project(tool)
@@ -24,8 +26,8 @@ set(extra_build_list)
 
 list(APPEND extra_build_list "3rdpart")
 
-option(B_BULID_VSOMEIP "build someip example" ON)
-option(B_BULID_COMMONAPI "build commonapi example" ON)
+option(B_BULID_VSOMEIP "build someip example" OFF)
+option(B_BULID_COMMONAPI "build commonapi example" OFF)
 option(B_BULID_FASTDDS "build fastdds example" OFF)
 option(B_BULID_NANOMSG "build nanomsg example" OFF)
 
