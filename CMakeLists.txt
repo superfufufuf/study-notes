@@ -68,6 +68,7 @@ include_directories(window)
 include_directories(destruct)
 include_directories(3rdpart)
 include_directories(log)
+include_directories(signalSlot)
 
 add_compile_options(-fno-elide-constructors) 
 

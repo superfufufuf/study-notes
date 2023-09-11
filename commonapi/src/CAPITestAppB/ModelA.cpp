@@ -108,6 +108,8 @@ void ClientM1()
         myProxy->getA1Attribute().getChangedEvent().subscribe([&](const CommonTypes::a1Struct &val)
                                                               { std::cout << "Received change message for A1" << std::endl; });
     }
+    myProxy->getProxyStatusEvent().subscribe([&](const CommonAPI::AvailabilityStatus &status)
+                                             { std::cout << "get proxy status:" << static_cast<int>(status) << std::endl; });
 
     value = 100;
 

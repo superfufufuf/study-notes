@@ -11,7 +11,10 @@
 #include "LogManager.h"
 
 using namespace std;
+template <typename T>
+T TempVerb{};
 
+// a test data***********************************************************************************************
 class tempData
 {
 public:
@@ -29,6 +32,7 @@ private:
     string m_data;
 };
 
+// to push a series of data in vector***********************************************************************************************
 template <typename T>
 void ParseArgs(vector<shared_ptr<T>> &_list, shared_ptr<T> t)
 {
@@ -74,6 +78,7 @@ public:
     }
 };
 
+// map's remove_if***********************************************************************************************
 template <typename _Map, typename Fun>
 void map_remove_if(_Map &_map, Fun _fun)
 {
@@ -90,6 +95,7 @@ void map_remove_if(_Map &_map, Fun _fun)
     }
 }
 
+// to test specialization***********************************************************************************************
 template <typename, typename, size_t>
 class TTestA;
 
@@ -150,34 +156,106 @@ private:
     char str[Q];
 };
 
+// test arg...***********************************************************************************************
+template <typename... Args>
+auto multiAdd(Args &&...args)
+{
+    // unary right fold
+    return (args + ...);
+}
+
 template <typename T>
-void printArgs(T &&t)
+void printArgs1(T &&t)
 {
     cout << t << endl;
 }
 
 template <typename T, typename... Args>
-void printArgs(T &&t, Args &&...args)
+void printArgs1(T &&t, Args &&...args)
 {
     cout << t << ",";
-    printArgs(forward<Args>(args)...);
+    printArgs1(forward<Args>(args)...);
 }
 
+template <typename... Args>
+void printArgs2(Args &&...args)
+{
+    ([&]()
+     { cout << args;
+    if constexpr (sizeof...(args) > 1)
+    {
+        cout << ",";
+    } }(),
+     ...);
+    cout << endl;
+}
+
+// enable_if***********************************************************************************************
 template <class T>
 typename std::enable_if<std::is_integral<T>::value, bool>::type is_odd(T i)
 {
     return bool(i % 2);
 }
 
-template <typename T, typename F = typename std::enable_if<std::is_integral<T>::value, void>::type>
+template <class T>
+typename std::enable_if<std::is_same<T, std::string>::value, std::string>::type to_string1(T _str)
+{
+    return _str;
+}
+template <class T>
+typename std::enable_if<!std::is_same<T, std::string>::value, std::string>::type to_string1(T _str)
+{
+    return std::to_string(_str);
+}
+
+template <class T>
+typename std::string to_string2(T _str)
+{
+    if constexpr (is_same<T, std::string>::value)
+    {
+        return _str;
+    }
+    else
+    {
+        // if don't use if constexpr, to_string2(std::string()) will error
+        return std::to_string(_str);
+    }
+}
+
+// test data length***********************************************************************************************
+template <typename T, typename F = typename std::enable_if<std::is_integral<T>::value, T>::type>
 void PrintDatalength(const T data)
 {
-    cout << std::is_same<F, void>::value << endl;
-    cout << std::is_same<F, bool>::value << endl;
-    cout << std::is_same<F, uint8_t>::value << endl;
-    cout << std::is_same<F, uint16_t>::value << endl;
-    cout << std::is_same<F, int32_t>::value << endl;
-    cout << "data[" << data << "]: " << sizeof(data) << " byte" << endl;
+    cout << "data[" << data << "]: ";
+    if (std::is_same<F, void>::value)
+    {
+        cout << "type is void";
+    }
+    else if (std::is_same<F, bool>::value)
+    {
+        cout << "type is  bool";
+    }
+    else if (std::is_same<F, char>::value)
+    {
+        cout << "type is  char";
+    }
+    else if (std::is_same<F, uint8_t>::value)
+    {
+        cout << "type is  uint8_t";
+    }
+    else if (std::is_same<F, uint16_t>::value)
+    {
+        cout << "type is  uint16_t";
+    }
+    else if (std::is_same<F, int32_t>::value)
+    {
+        cout << "type is  int32_t";
+    }
+    else
+    {
+        cout << "type is  other";
+    }
+    cout << ", size is " << sizeof(data) << " byte" << endl;
 }
 
 void TestTemplate()
@@ -185,14 +263,19 @@ void TestTemplate()
     list<int> testList;
     testList.push_back(12);
     testList.push_back(14);
-    cout << is_odd(231) << "," << is_odd(232) << endl;
+    cout << is_odd(231) << "," << is_odd(232) << "," << multiAdd(10, 20, 30, 40) << endl;
     PrintDatalength(true);
     PrintDatalength('a');
     PrintDatalength(uint16_t(6000000));
     PrintDatalength(int32_t(425));
 
-    TTestA<int, int, 10> ta;
+    TempVerb<float> = 15.6f;
+    TempVerb<int> = 18;
+    printArgs1("printArgs1", TempVerb<int>, TempVerb<float>, 'c');
+    printArgs2("printArgs2", 12, 15.7, 'c');
+    using YT = decltype(std::declval<int>());
 
+    TTestA<int, int, 10> ta;
     ta.print(1104, 2260);
     // TTestA<list<int>, string, 12>::print(testList, "11550");
     ta.print(21412, 3740155);

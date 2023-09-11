@@ -12,6 +12,7 @@
 #include "MyEGLClass.h"
 #include "destruct.hpp"
 #include "LogManager.h"
+#include "SignalSlot.hpp"
 
 using namespace std;
 
@@ -28,8 +29,9 @@ typedef int (*operationFunc)(int, int);
 #define TEST_ID_cout_Test 9
 #define TEST_ID_library_Test 10
 #define TEST_ID_Any 11
+#define TEST_ID_Signal_Slot 12
 
-#define TEST_ID TEST_ID_Any
+#define TEST_ID TEST_ID_Signal_Slot
 
 std::string Fun1(const std::string &_str, const int _index)
 {
@@ -82,7 +84,7 @@ int main(int argc, char const *argv[])
 
     map_remove_if(testMap, [&](pair<string, tempData *> itor)
                   { return (itor.first == "aaa"); });
-    _LOG("testMap.size:" << testMap.size(), LogLevel::INFO);
+    _LOG("testMap.size:" + to_string(testMap.size()), LogLevel::INFO);
 
     TestTemplate();
 #elif TEST_ID == TEST_ID_Window_Test
@@ -165,6 +167,8 @@ int main(int argc, char const *argv[])
     }
     a = std::string("a");
     cout << a.type().name() << " " << std::any_cast<std::string>(a) << endl;
+#elif TEST_ID == TEST_ID_Signal_Slot
+    TestSignalSlot();
 #endif
 
     _LOG("all things has done.", LogLevel::INFO);
