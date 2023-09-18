@@ -5,18 +5,18 @@
 #include <unistd.h>
 #include <signal.h>
 #include <iostream>
-#include "LogManager.h"
+#include <string>
 
 using namespace std;
 
 void exitFun()
 {
-    _LOG("main is exit", LogLevel::DEBUG);
+    cout << "main is exit" << endl;
 }
 
 void abnormalExit(int32_t id)
 {
-    _LOG("get one sign:" + to_string(id), LogLevel::DEBUG);
+    cout << "get one sign:" << id << endl;
 }
 
 void TestDestruct()
@@ -51,5 +51,27 @@ void TestDestruct()
         ::signal(i, abnormalExit);
     }
 }
+
+class DestructChecker
+{
+public:
+    DestructChecker(const string &_key)
+        : key(_key)
+    {
+        cout << key << " is create." << endl;
+    }
+
+    ~DestructChecker()
+    {
+        cout << key << " is destory." << endl;
+    }
+
+    void checkAlive()
+    {
+    }
+
+private:
+    string key;
+};
 
 #endif
