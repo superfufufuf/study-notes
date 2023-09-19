@@ -31,7 +31,7 @@ option(B_BULID_COMMONAPI "build commonapi example" OFF)
 option(B_BULID_FASTDDS "build fastdds example" OFF)
 option(B_BULID_NANOMSG "build nanomsg example" OFF)
 option(B_BULID_MULTICAST_TEST "build multicast example" OFF)
-option(B_BULID_DESTRUCT "build distruct example" ON)
+option(B_BULID_DESTRUCT "build distruct example" OFF)
 
 if(B_BULID_VSOMEIP)
     list(APPEND extra_build_list "vsomeip")

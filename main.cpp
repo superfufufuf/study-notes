@@ -13,6 +13,7 @@
 #include "destruct.hpp"
 #include "LogManager.h"
 #include "SignalSlot.hpp"
+#include "ping.hpp"
 
 using namespace std;
 
@@ -25,13 +26,13 @@ typedef int (*operationFunc)(int, int);
 #define TEST_ID_TaskManager_Test 5
 #define TEST_ID_Template_Test 6
 #define TEST_ID_Window_Test 7
-#define TEST_ID_Destruct_Test 8
+#define TEST_ID_Ping_Test 8
 #define TEST_ID_cout_Test 9
 #define TEST_ID_library_Test 10
 #define TEST_ID_Any 11
 #define TEST_ID_Signal_Slot 12
 
-#define TEST_ID TEST_ID_Signal_Slot
+#define TEST_ID TEST_ID_Ping_Test
 
 std::string Fun1(const std::string &_str, const int _index)
 {
@@ -106,8 +107,18 @@ int main(int argc, char const *argv[])
         MyEGLClass myEgl(displayId, windowId, windowRect);
         myEgl.Render(); })
         .detach();
-#elif TEST_ID == TEST_ID_Destruct_Test
-    TestDestruct();
+#elif TEST_ID == TEST_ID_Ping_Test
+    string pingIp;
+    cout << "Please input ping IP:" << endl;
+    cin >> pingIp;
+    if (ping(pingIp.c_str(), 10000))
+    {
+        cout << "Ping succeed!" << endl;
+    }
+    else
+    {
+        cout << "Ping wrong!" << endl;
+    }
 #elif TEST_ID == TEST_ID_cout_Test
     int i = 10;
     float j = 1.234;
