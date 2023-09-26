@@ -1,5 +1,7 @@
 #include <dlfcn.h>
 #include <any>
+#include <optional>
+#include <variant>
 
 #include "const.h"
 #include "share_ptr.h"
@@ -32,7 +34,44 @@ typedef int (*operationFunc)(int, int);
 #define TEST_ID_Any 11
 #define TEST_ID_Signal_Slot 12
 
-#define TEST_ID TEST_ID_Ping_Test
+#define TEST_ID TEST_ID_Any
+
+class TwoIntData
+{
+public:
+    TwoIntData(int _x, int _y)
+        : x(_x), y(_y)
+    {
+        cout << "TwoIntData create." << endl;
+    }
+
+    ~TwoIntData()
+    {
+        cout << "TwoIntData[" << x << "," << y << "] delete." << endl;
+    }
+
+    void set(int _x, int _y)
+    {
+        x = _x;
+        y = _y;
+    }
+
+    void print()
+    {
+        cout << "x:" << x << ", y:" << y << endl;
+    }
+
+    friend ostream &operator<<(ostream &os, TwoIntData &t)
+    {
+        os << "[" << t.x << "," << t.y << "]";
+        return os;
+    }
+
+    int x;
+
+private:
+    int y;
+};
 
 std::string Fun1(const std::string &_str, const int _index)
 {
@@ -163,21 +202,124 @@ int main(int argc, char const *argv[])
     }
 
 #elif TEST_ID == TEST_ID_Any
-    std::any a = 1;
-    cout << a.type().name() << " " << std::any_cast<int>(a) << endl;
-    a = 2.2f;
-    cout << a.type().name() << " " << std::any_cast<float>(a) << endl;
-    if (a.has_value())
-    {
-        cout << "a has value" << endl;
+    { // option test
+        TwoIntData t1(1, 2);
+        std::optional<TwoIntData> o1;
+        cout << "first option." << endl;
+        if (o1.has_value())
+        {
+            o1->print();
+        }
+        o1 = t1;
+        cout << "second option." << endl;
+        if (o1.has_value())
+        {
+            o1->print();
+            t1.set(1001, 1002);
+            o1->print();
+        }
+        std::optional<TwoIntData> o3{TwoIntData(3, 4)};
+        cout << "third option." << endl;
+        if (o3.has_value())
+        {
+            o3->print();
+        }
+        std::optional<TwoIntData> o4{in_place, 5, 6};
+        cout << "fourth option." << endl;
+        if (o4.has_value())
+        {
+            o4->print();
+        }
+        auto o5 = std::make_optional<TwoIntData>(7, 8);
+        cout << "fifth option." << endl;
+        if (o5.has_value())
+        {
+            o5->print();
+        }
     }
-    a.reset();
-    if (a.has_value())
-    {
-        cout << "a has value" << endl;
+
+    { // variant
+        variant<int, TwoIntData, float> var1;
+        var1 = 1.2f;                                           // 直接用=初始化
+        cout << "the variant is " << get<float>(var1) << endl; // 1.2
+        try
+        {
+            get<int>(var1); // var1 含 float 而非 int ：将抛出
+        }
+        catch (const std::bad_variant_access &)
+        {
+            cout << "get error." << endl;
+        }
+        // cout<<"the variant is "<<get<int>(var1)<<endl;//std::bad_variant_access
+        var1 = 2;
+        cout << "the variant is " << get<int>(var1) << endl; // 2
+        cout << "the variant is " << get<0>(var1) << endl;   // get<0>(...) == get<int>(...)
+
+        variant<int, TwoIntData, float> var2(in_place_type<TwoIntData>, 100, 200);
+        cout << "the variant is " << get<TwoIntData>(var2) << endl; // std::get<>()
+
+        variant<int, TwoIntData, float> var3(in_place_index<1>, TwoIntData(300, 400)); // move
+        cout << "the variant is " << get<1>(var3) << endl;
+
+        var3.emplace<2>(1.2f);
+        var3.emplace<1>(500, 600);                         // 这里注意与optional的emplace的区别，需要加定位
+        cout << "the variant is " << get<1>(var3) << endl; // 2
+        cout << var3.index() << endl;                      // index == 1
+
+        using var_t = std::variant<int, long, double, std::string>;
+        std::vector<var_t> vec = {10, 15l, 1.5, "hello"};
+        for (auto v : vec)
+        {
+            visit([](auto &&args)
+                  {
+                    using m_type = decay_t<decltype(args)>; //remove cv
+                    if constexpr (is_same_v<m_type, int>)
+                    {
+                        cout << "data[" << args << "] type is int" << endl;
+                    } // if后跟constexpr为编译时判断
+                    else if constexpr (is_same_v<m_type, long>)
+                    {
+                        cout << "data[" << args << "] type is long" << endl;
+                    }
+                    else if constexpr (is_same_v<m_type, double>)
+                    {
+                        cout << "data[" << args << "] type is double" << endl;
+                    }
+                    else if constexpr (is_same_v<m_type, string>)
+                    {
+                        cout << "data[" << args << "] type is string" << endl;
+                    } },
+                  v);
+        }
     }
-    a = std::string("a");
-    cout << a.type().name() << " " << std::any_cast<std::string>(a) << endl;
+
+    { // any
+        std::any a = 1;
+        cout << a.type().name() << " " << std::any_cast<int>(a) << endl;
+        a = 2.2f;
+        cout << a.type().name() << " " << std::any_cast<float>(a) << endl;
+        if (a.has_value())
+        {
+            cout << "a has value" << endl;
+        }
+        a.reset();
+        if (a.has_value())
+        {
+            cout << "a has value" << endl;
+        }
+        a = std::string("a");
+        cout << a.type().name() << " " << std::any_cast<std::string>(a) << endl;
+
+        std::any b;
+        {
+            shared_ptr<TwoIntData> i = make_shared<TwoIntData>(10, 20);
+            b = i;
+            (*i).set(11, 21);
+            cout << std::any_cast<shared_ptr<TwoIntData>>(b).use_count() << endl;
+        }
+        cout << std::any_cast<shared_ptr<TwoIntData>>(b).use_count() << endl;
+        cout << b.type().name() << " " << std::any_cast<shared_ptr<TwoIntData>>(b)->x << endl;
+    }
 #elif TEST_ID == TEST_ID_Signal_Slot
     TestSignalSlot();
 #endif
