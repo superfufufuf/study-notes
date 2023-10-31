@@ -74,6 +74,7 @@ include_directories(3rdpart)
 include_directories(log)
 include_directories(signalSlot)
 include_directories(ping)
+include_directories(rand)
 
 add_compile_options(-fno-elide-constructors) 
 

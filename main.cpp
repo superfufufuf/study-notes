@@ -16,6 +16,7 @@
 #include "LogManager.h"
 #include "SignalSlot.hpp"
 #include "ping.hpp"
+#include "randTest.h"
 
 using namespace std;
 
@@ -33,8 +34,9 @@ typedef int (*operationFunc)(int, int);
 #define TEST_ID_library_Test 10
 #define TEST_ID_Any 11
 #define TEST_ID_Signal_Slot 12
+#define TEST_ID_Rand 13
 
-#define TEST_ID TEST_ID_Any
+#define TEST_ID TEST_ID_Rand
 
 class TwoIntData
 {
@@ -322,6 +324,9 @@ int main(int argc, char const *argv[])
     }
 #elif TEST_ID == TEST_ID_Signal_Slot
     TestSignalSlot();
+#elif TEST_ID == TEST_ID_Rand
+    testRand();
+    testRandom();
 #endif
 
     _LOG("all things has done.", LogLevel::INFO);
