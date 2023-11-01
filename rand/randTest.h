@@ -1,3 +1,6 @@
+#ifndef RAND_TEST_H
+#define RAND_TEST_H
+
 #include <cstdlib>
 #include <ctime>
 #include <random>
@@ -27,3 +30,5 @@ void testRandom()
     }
     std::cout << "random use time: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - nowTime).count() << "ms." << std::endl;
 }
+
+#endif
