@@ -9,6 +9,8 @@
 #include <sys/mman.h>
 #include <time.h>
 #include <unistd.h>
+#include <drm/drm.h>
+#include <drm/drm_mode.h>
 #include <xf86drm.h>
 #include <xf86drmMode.h>
 
@@ -46,7 +48,7 @@ static int modeset_create_fb(int fd, struct buffer_object *bo)
 	map.handle = create.handle;
 	drmIoctl(fd, DRM_IOCTL_MODE_MAP_DUMB, &map);
 
-	bo->vaddr = mmap(0, create.size, PROT_READ | PROT_WRITE,
+	bo->vaddr = (uint8_t *)mmap(0, create.size, PROT_READ | PROT_WRITE,
 			MAP_SHARED, fd, map.offset);
 
 	/* initialize the dumb-buffer with white-color */
