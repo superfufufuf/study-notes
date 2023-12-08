@@ -35,8 +35,9 @@ typedef int (*operationFunc)(int, int);
 #define TEST_ID_Any 11
 #define TEST_ID_Signal_Slot 12
 #define TEST_ID_Rand 13
+#define TEST_ID_IOStream 14
 
-#define TEST_ID TEST_ID_Rand
+#define TEST_ID TEST_ID_IOStream
 
 class TwoIntData
 {
@@ -327,6 +328,24 @@ int main(int argc, char const *argv[])
 #elif TEST_ID == TEST_ID_Rand
     testRand();
     testRandom();
+#elif TEST_ID == TEST_ID_IOStream
+    while (true)
+    {
+        int xxx{-1};
+        bool isOk{false};
+        if (cin >> xxx)
+        {
+            isOk = true;
+        }
+        cout << isOk << "," << xxx << "," << cin.fail() <<  endl;
+        if (!isOk)
+        {
+            cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');// 略过缓存
+        }
+
+        this_thread::sleep_for(chrono::milliseconds(100));
+    }
 #endif
 
     _LOG("all things has done.", LogLevel::INFO);
