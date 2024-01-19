@@ -84,8 +84,36 @@ std::string Fun1(const std::string &_str, const int _index)
     return _str + "," + to_string(_index);
 }
 
+typedef struct bs
+{
+    unsigned char a:4;
+    unsigned char  :0; /*空域，该2位不可以使用*/
+    unsigned char b:3;  
+}Bits;
+
+struct reccccc
+{
+    char a : 1;
+    char b : 2;
+    char c : 3;
+};
+
 int main(int argc, char const *argv[])
 {
+    reccccc testrec;
+    auto structSize = sizeof(testrec);
+    memset(&testrec, 0, structSize);
+    testrec.a = 1;
+    testrec.b = 2;
+    testrec.c = 5;
+    std::cout << "Bits size:" << sizeof(Bits) << ",reccccc size:" << structSize << ", oridata:0x";
+    char *data = reinterpret_cast<char *>(&testrec);
+    for (int i = 0; i < structSize; i++)
+    {
+        std::cout << std::hex << int(data[i]);
+    }
+    std::cout << ", a[" << int(testrec.a) << "], b[" << int(testrec.b) << "], c[" << int(testrec.c) << "]" << std::endl;
+
     LogManager::GetInstance().SetWriteLogLevel(LogLevel::ALL);
     LogManager::GetInstance().SetWriteLogMethod(WriteLogMethod::CONSOLE);
     LogManager::GetInstance().SetTimeFormat("%H:%M:%S");
@@ -337,11 +365,11 @@ int main(int argc, char const *argv[])
         {
             isOk = true;
         }
-        cout << isOk << "," << xxx << "," << cin.fail() <<  endl;
+        cout << isOk << "," << xxx << "," << cin.fail() << endl;
         if (!isOk)
         {
             cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');// 略过缓存
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // 略过缓存
         }
 
         this_thread::sleep_for(chrono::milliseconds(100));
