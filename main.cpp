@@ -2,6 +2,11 @@
 #include <any>
 #include <optional>
 #include <variant>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/uio.h>
 
 #include "const.h"
 #include "share_ptr.h"
@@ -36,8 +41,10 @@ typedef int (*operationFunc)(int, int);
 #define TEST_ID_Signal_Slot 12
 #define TEST_ID_Rand 13
 #define TEST_ID_IOStream 14
+#define TEST_ID_STRUCT 15
+#define TEST_ID_IOVEC 16
 
-#define TEST_ID TEST_ID_IOStream
+#define TEST_ID TEST_ID_IOVEC
 
 class TwoIntData
 {
@@ -86,10 +93,10 @@ std::string Fun1(const std::string &_str, const int _index)
 
 typedef struct bs
 {
-    unsigned char a:4;
-    unsigned char  :0; /*空域，该2位不可以使用*/
-    unsigned char b:3;  
-}Bits;
+    unsigned char a : 4;
+    unsigned char : 0; /*空域，该2位不可以使用*/
+    unsigned char b : 3;
+} Bits;
 
 struct reccccc
 {
@@ -100,20 +107,6 @@ struct reccccc
 
 int main(int argc, char const *argv[])
 {
-    reccccc testrec;
-    auto structSize = sizeof(testrec);
-    memset(&testrec, 0, structSize);
-    testrec.a = 1;
-    testrec.b = 2;
-    testrec.c = 5;
-    std::cout << "Bits size:" << sizeof(Bits) << ",reccccc size:" << structSize << ", oridata:0x";
-    char *data = reinterpret_cast<char *>(&testrec);
-    for (int i = 0; i < structSize; i++)
-    {
-        std::cout << std::hex << int(data[i]);
-    }
-    std::cout << ", a[" << int(testrec.a) << "], b[" << int(testrec.b) << "], c[" << int(testrec.c) << "]" << std::endl;
-
     LogManager::GetInstance().SetWriteLogLevel(LogLevel::ALL);
     LogManager::GetInstance().SetWriteLogMethod(WriteLogMethod::CONSOLE);
     LogManager::GetInstance().SetTimeFormat("%H:%M:%S");
@@ -373,6 +366,55 @@ int main(int argc, char const *argv[])
         }
 
         this_thread::sleep_for(chrono::milliseconds(100));
+    }
+
+#elif TEST_ID == TEST_ID_STRUCT
+    reccccc testrec;
+    auto structSize = sizeof(testrec);
+    memset(&testrec, 0, structSize);
+    testrec.a = 1;
+    testrec.b = 2;
+    testrec.c = 5;
+    std::cout << "Bits size:" << sizeof(Bits) << ",reccccc size:" << structSize << ", oridata:0x";
+    char *data = reinterpret_cast<char *>(&testrec);
+    for (int i = 0; i < structSize; i++)
+    {
+        std::cout << std::hex << int(data[i]);
+    }
+    std::cout << ", a[" << int(testrec.a) << "], b[" << int(testrec.b) << "], c[" << int(testrec.c) << "]" << std::endl;
+
+#elif TEST_ID == TEST_ID_IOVEC
+    char buf1[100] = {0};
+    char buf2[100] = {0};
+    char buf3[100] = {0};
+    memset(buf1, '*', sizeof(buf1));
+    memset(buf2, '*', sizeof(buf2));
+    memset(buf3, '*', sizeof(buf3));
+    struct iovec iov[3];
+    ssize_t nread;
+
+    iov[0].iov_base = buf1;
+    iov[0].iov_len = 5;
+    iov[1].iov_base = buf2;
+    iov[1].iov_len = 8;
+    iov[2].iov_base = buf3;
+    iov[2].iov_len = 100;
+
+    printf("please input data:\n");
+    nread = readv(STDIN_FILENO, iov, 3);
+    printf("%ld bytes read.\n", nread);
+    printf("buf1: %s\n", buf1);
+    printf("buf2: %s\n", buf2);
+    printf("buf3: %s", buf3);
+
+    iov[0].iov_base = buf3;
+    iov[0].iov_len = 100;
+    iov[2].iov_base = buf1;
+    iov[2].iov_len = 5;
+    ssize_t ret = writev(STDOUT_FILENO, iov, 3);
+    if (ret < 0)
+    {
+        printf("writev error\n");
     }
 #endif
 
