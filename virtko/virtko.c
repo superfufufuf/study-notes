@@ -9,6 +9,8 @@
 #include <linux/sched.h>
 #include <linux/poll.h>
 
+#include "virtko.h"
+
 static char *test_init_data __initdata = "hello, ";
 
 // dri dependent
@@ -27,14 +29,12 @@ module_param(ko_info, charp, S_IRUGO);
 struct MyData
 {
 	char data[DataSize];
-	struct mutex mutex;
+	struct mutex mtx;
 	wait_queue_head_t waitq;
 	int refCount;
 };
 static struct MyData *memData = NULL;
 
-// ioctl
-#define  MEM_CLEAR       0x01
 
 int virtko_add(int a, int b)
 {
@@ -45,6 +45,7 @@ EXPORT_SYMBOL_GPL(virtko_add);
 
 int virtko_open(struct inode *inode, struct file *filp)
 {
+	mtx.lock();
 	filp->private_data = memData;
 	memData->refCount++;
 	printk("virtko_open, refCount: %d \n", memData->refCount);
